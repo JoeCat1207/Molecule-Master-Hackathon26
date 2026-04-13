@@ -68,7 +68,6 @@ molecule-master/
         components/  # Screens, layout, build canvas, quiz cards, error viewer
         store/       # Zustand game state
         api/         # Fetch wrapper for backend
-  molecule_game.py   # Original Python/Tkinter prototype (reference)
 ```
 
 ---
@@ -127,12 +126,6 @@ The shared validation engine runs on both client (instant visual feedback) and s
 - **Bond validation** — catches self-loops and duplicate bonds
 - **Formula computation** — counts atoms and outputs Hill system formula
 - **Partial credit** — scores based on fraction of satisfied atoms
-
----
-
-## Original Prototype
-
-The original `molecule_game.py` is a single-file Python/Tkinter desktop app with 30 molecules, PubChem images, Wikipedia hints, and OpenAI tutoring. It remains in the repo as a reference.
 
 ---
 
