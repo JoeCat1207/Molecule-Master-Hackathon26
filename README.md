@@ -1,213 +1,142 @@
 # Molecule Master
 
-A chemistry practice game built in Python. A 2D molecular structure is shown
-on screen and the player has to name it. Points and difficulty increase as the
-player progresses — the game pulls structures live from **PubChem** and
-fetches spoiler-redacted hints from **Wikipedia**.
+**Build. Learn. Master.** An interactive chemistry learning game with three game modes, real-time molecule validation, and 90 challenges across 5 difficulty levels.
 
-![level-up demo](./Screenshot%202026-04-13%20at%208.46.02%20AM.png)
+Built with React + TypeScript + Vite (frontend), Node.js + Express (backend), and a custom chemistry validation engine.
+
+---
+
+## Game Modes
+
+### Identify Mode
+A molecule's 2D structure is fetched live from **PubChem** and displayed on screen. Type the molecule's name to earn points. Use the **Hint** button for a spoiler-redacted Wikipedia clue, or **Skip** to move on.
+
+### Build Mode
+Drag atoms (C, H, O, N, S, P, F, Cl, Br) from a palette onto a **React Flow** canvas and draw bonds between them. The game validates your molecule in real time:
+- Valence indicators (e.g. `2/4`) show how many bonds each atom has vs. how many it needs
+- Atom rings glow **green** (satisfied), **amber** (incomplete), or **red** (over-bonded)
+- A validation panel lists errors and warnings in plain English
+- Click any bond to cycle between single, double, and triple
+
+### Debug Mode
+A broken molecule is displayed with one or more structural errors (wrong bond order, missing hydrogen, over-bonded atom, etc.). Click atoms and bonds you think are wrong to flag them, then submit. The game tells you what you found, what you missed, and explains the chemistry.
 
 ---
 
 ## Features
 
-- **30 molecules across 5 difficulty levels**, from water and methane up to
-  chlorophyll a, ATP, and quinine.
-- **Live structure images** — 2D skeletal formulas are fetched on demand from
-  the PubChem PUG REST API (`/compound/cid/{cid}/PNG`). Images are
-  auto-cropped to remove PubChem's whitespace padding, scaled to fit while
-  preserving aspect ratio (downscale-only, never upscaled into blur), and
-  dropped onto a rounded white plate so bonds stay crisp against the dark
-  theme.
-- **Secondary API for hints** — the *HINT* button hits the Wikipedia REST
-  summary endpoint (`/api/rest_v1/page/summary/{title}`), trims the result to
-  a couple of sentences, and redacts the molecule's name, synonyms, **and
-  morphological variants** (e.g. "adrenalin" when the answer is
-  "adrenaline", "caffeinated" when the answer is "caffeine") with █-blocks
-  before showing it.
-- **Dynamic scoring** — each correct answer is worth `level × 10` points.
-  Three correct answers in a row at a level advance the player to the next
-  level (up to level 5). After **more than 3 wrong attempts** on the same
-  molecule, every additional wrong guess deducts **5 points** (score is
-  clamped at 0).
-- **AI Study Buddy** — if the player gets the same molecule wrong 3 times,
-  a polished popup tutor powered by the **OpenAI Chat Completions API**
-  (`gpt-4o-mini`) appears with a friendly, spoiler-free hint tailored to
-  that molecule. The panel uses a dedicated reading-friendly typography
-  pair (Avenir Next for headings, Georgia 16 pt for body), shows the
-  molecule's formula as context, supports **Esc** to close, and has a
-  visible "Got it" dismiss button. It auto-dismisses as soon as the
-  student answers correctly (or skips).
-- **Streak counter** that resets on wrong answers and skips.
-- **Flexible answer matching** — case-insensitive, multiple *name-based*
-  synonyms per molecule (e.g. `acetaminophen` / `paracetamol` / `tylenol`,
-  `adrenaline` / `epinephrine`, `ethanol` / `ethyl alcohol`). Chemical
-  formulas are intentionally **not** accepted as answers, because the hint
-  system reveals the formula — accepting it would let players auto-solve.
-- **Visually polished UI** built entirely on a Tkinter `Canvas`:
-  - Vertical slate gradient background (96-step color interpolation) —
-    neutral rather than navy so the app reads less "blue".
-  - Rounded-corner cards with soft drop-shadows and teal accent borders.
-  - Card flashes emerald / red on correct / wrong answers.
-  - Animated progress bar toward the next level.
-  - Stat panel showing SCORE (gold), LEVEL (teal), and STREAK (emerald).
-  - Canvas-drawn action buttons with distinct semantic colors — SUBMIT
-    emerald, HINT amber, SKIP red — and hover states, so the dark theme
-    renders consistently on macOS, Windows, and Linux (bypassing platform
-    button styling quirks).
-- **Non-blocking networking** — image downloads and Wikipedia lookups run on
-  background threads, so the UI never freezes. Both responses are cached.
+- **90 challenges** across Build, Identify, and Debug modes (30 each), with 6 per level
+- **30 real molecules** from water and methane up to chlorophyll, ATP, and quinine
+- **5 difficulty levels** with progression (3 correct answers to advance)
+- **Real-time chemistry validation** engine with valence checking, connectivity analysis, and formula computation
+- **Live PubChem images** — 2D skeletal formulas fetched on demand via a backend proxy
+- **Wikipedia hints** with stem-based name redaction (morphological variants like "caffeinated" for "caffeine" are also masked)
+- **AI Study Buddy** — optional OpenAI-powered tutoring after 3 wrong attempts (falls back to rule-based hints)
+- **Scoring** — points scale with level, streak bonuses, partial credit for Build/Debug modes
+- **Dark theme** with glassmorphism cards, animated counters, and a polished UI
 
 ---
 
-## APIs used
+## Tech Stack
 
-| API | Purpose | Endpoint |
-| --- | --- | --- |
-| **PubChem PUG REST** (primary) | Fetch 2D structure PNGs by compound ID | `https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/cid/{cid}/PNG?image_size=large` |
-| **Wikipedia REST v1** (secondary, for hints) | Fetch short article summaries | `https://en.wikipedia.org/api/rest_v1/page/summary/{title}` |
-| **OpenAI Chat Completions** (tutor assistant) | Generate spoiler-free help when a student struggles | `https://api.openai.com/v1/chat/completions` (model `gpt-4o-mini`) |
+| Layer | Technology |
+|-------|-----------|
+| Frontend | React 18, Vite, TypeScript, Tailwind CSS, React Flow, Zustand |
+| Backend | Node.js, Express, TypeScript |
+| Shared | Custom chemistry validation engine (valence rules, formula parsing, graph analysis) |
+| APIs | PubChem PUG REST (molecule images), Wikipedia REST (hints), OpenAI Chat Completions (optional tutor) |
+| Architecture | npm workspaces monorepo with shared types between client and server |
 
-PubChem and Wikipedia require no API key. Wikipedia is called with a
-descriptive `User-Agent` header per their
-[API etiquette](https://en.wikipedia.org/api/rest_v1/).
+---
 
-The OpenAI endpoint requires a Bearer API key, which the game reads from
-the `OPENAI_API_KEY` environment variable. For convenience, a `.env` file
-placed next to `molecule_game.py` is auto-loaded at startup:
+## Project Structure
+
+```
+molecule-master/
+  packages/
+    shared/          # TypeScript types + chemistry validation engine
+      src/
+        types/       # Atom, Bond, MoleculeGraph, GameSession, API types
+        chemistry/   # Valence table, validation, formula parsing
+    server/          # Express API
+      src/
+        routes/      # REST endpoints for quiz, build, error, molecules, AI
+        services/    # Business logic, PubChem proxy, Wikipedia hints, sessions
+        data/        # 90 challenges as JSON (molecules, build, error)
+    client/          # React + Vite frontend
+      src/
+        components/  # Screens, layout, build canvas, quiz cards, error viewer
+        store/       # Zustand game state
+        api/         # Fetch wrapper for backend
+  molecule_game.py   # Original Python/Tkinter prototype (reference)
+```
+
+---
+
+## API Endpoints
+
+| Method | Path | Purpose |
+|--------|------|---------|
+| GET | `/api/molecules?level=N` | List molecules (answers stripped) |
+| GET | `/api/molecules/:cid/image` | Proxy PubChem PNG |
+| GET | `/api/molecules/:cid/hint` | Redacted Wikipedia hint |
+| POST | `/api/quiz/check` | Check molecule name guess |
+| GET | `/api/build/challenges?level=N` | Build challenge list |
+| POST | `/api/build/validate` | Real-time molecule graph validation |
+| POST | `/api/build/check` | Check built molecule against target |
+| GET | `/api/errors/challenges?level=N` | Error detection challenge list |
+| POST | `/api/errors/check` | Check flagged errors |
+| POST | `/api/ai/hint` | AI-powered hint (OpenAI with fallback) |
+
+---
+
+## Getting Started
+
+### Prerequisites
+
+- Node.js 18+
+- npm 9+
+
+### Install & Run
 
 ```bash
-cp .env.example .env
-# then edit .env and paste your key
-echo 'OPENAI_API_KEY=sk-...' > .env
+npm install
+npm run dev
 ```
 
-`.env` is listed in `.gitignore`, so your key is never committed. If no
-key is set, the Study Buddy popup still appears after 3 wrong attempts
-but shows a fallback hint instead of calling OpenAI.
+This starts both the Vite frontend (http://localhost:5173) and the Express API (http://localhost:3001). The Vite dev server proxies `/api` requests to the backend automatically.
 
----
+### Optional: AI Study Buddy
 
-## Installation
-
-Requires Python 3.9+.
-
-```bash
-pip install requests Pillow
-```
-
-`tkinter` ships with the Python standard library. On macOS and Windows it
-comes preinstalled; on most Linux distributions install it via the system
-package manager (`sudo apt install python3-tk` on Debian/Ubuntu).
-
----
-
-## Running the game
-
-From the project folder:
-
-```bash
-python3 molecule_game.py
-```
-
-A 980 × 780 window will open. Type your answer in the text box and press
-**Enter** (or click **SUBMIT**). Use **HINT** for a spoiler-redacted clue
-from Wikipedia, or **SKIP** to give up and move on.
-
----
-
-## How to play
-
-1. A molecule is loaded from PubChem and shown on the card.
-2. Type its common name in the text field and press **Enter**.
-3. If you're right, you earn `level × 10` points and your streak goes up.
-4. Every 3 correct answers at the current level bumps you up one level, up
-   to level 5 (where each correct answer is worth 50 points).
-5. A wrong answer resets the streak and reveals the molecular formula as a
-   consolation clue. Click **HINT** if you want a description-based clue
-   from Wikipedia instead. (Because the formula is shown in these clues,
-   formulas are not accepted as valid answers — you have to know the
-   name.)
-6. After **3 wrong attempts** on the same molecule, the **Study Buddy**
-   popup opens with an OpenAI-generated hint. After **more than 3 wrong
-   attempts**, each further wrong guess costs you 5 points.
-
-### Accepted answers
-
-The game accepts any of several common names or formulas per molecule. A few
-examples:
-
-| Display name | Also accepted |
-| --- | --- |
-| Water | `water`, `dihydrogen monoxide` |
-| Acetone | `acetone`, `propanone`, `2-propanone`, `dimethyl ketone` |
-| Acetaminophen | `acetaminophen`, `paracetamol`, `tylenol` |
-| Adrenaline | `adrenaline`, `epinephrine` |
-| Ascorbic acid | `ascorbic acid`, `vitamin c`, `l-ascorbic acid` |
-
-Matching is case-insensitive and whitespace-tolerant. Molecular formulas
-are not accepted, since the hint system reveals the formula.
-
----
-
-## Difficulty levels
-
-| Level | Points / correct | Example molecules |
-| --- | --- | --- |
-| 1 | 10 | Water, methane, ammonia, carbon dioxide, nitrogen, hydrogen peroxide |
-| 2 | 20 | Ethanol, methanol, acetic acid, benzene, ethylene, propane |
-| 3 | 30 | Caffeine, aspirin, acetone, urea, glucose, citric acid |
-| 4 | 40 | Cholesterol, testosterone, dopamine, serotonin, adrenaline, acetaminophen |
-| 5 | 50 | Penicillin G, ATP, vitamin C, quinine, chlorophyll a, quercetin |
-
----
-
-## Project structure
+Create a `.env` file in the project root:
 
 ```
-Chemistry Project/
-├── molecule_game.py   # the entire game (single file)
-└── README.md          # this file
+OPENAI_API_KEY=sk-...
 ```
 
-Everything — game logic, API calls, image processing, and the full
-Tkinter/Canvas UI — lives in `molecule_game.py`.
+If no key is set, the Study Buddy falls back to rule-based hints.
 
 ---
 
-## How the hint redaction works
+## Chemistry Validation Engine
 
-When the player clicks **HINT**, the game:
+The shared validation engine runs on both client (instant visual feedback) and server (authoritative checks). It supports:
 
-1. Fetches the Wikipedia summary for the molecule's page title.
-2. Splits the extract on sentence boundaries and takes the first ~2 sentences
-   (trimmed to 280 characters).
-3. Builds a redaction set containing: all accepted answers, the molecule's
-   display name, every word >3 letters in the display name, and every word
-   >3 letters in the Wikipedia title.
-4. Replaces each redaction term with `███`, longest terms first. For alpha
-   terms of 5+ letters, matching is stem-based (drop the last 1–2
-   characters, then match the stem plus any alphabetical suffix) so that
-   morphological variants like "adrenalin" for "adrenaline",
-   "caffeinated" for "caffeine", or "acetates" for "acetate" are also
-   masked. Short or non-alpha terms (e.g. `atp`, `5-ht`) use exact
-   word-boundary matching so they don't over-redact.
+- **Valence checking** for H, C, N, O, S, P, F, Cl, Br, I
+- **Connectivity analysis** — detects disconnected atoms and fragments
+- **Bond validation** — catches self-loops and duplicate bonds
+- **Formula computation** — counts atoms and outputs Hill system formula
+- **Partial credit** — scores based on fraction of satisfied atoms
 
-So a hint for caffeine looks like:
+---
 
-> **Hint (formula C₈H₁₀N₄O₂):**  ███ is a central nervous system (CNS)
-> stimulant of the methylxanthine class and is the most commonly consumed
-> psychoactive substance globally…
+## Original Prototype
 
-If the Wikipedia call fails for any reason, the hint falls back to a generic
-*"starts with X, N letters"* clue built from the molecule's display name.
+The original `molecule_game.py` is a single-file Python/Tkinter desktop app with 30 molecules, PubChem images, Wikipedia hints, and OpenAI tutoring. It remains in the repo as a reference.
 
 ---
 
 ## Attribution
 
-- Chemical structures © [PubChem](https://pubchem.ncbi.nlm.nih.gov/), a free
-  resource provided by the National Center for Biotechnology Information
-  (NCBI) at the U.S. National Library of Medicine.
-- Descriptive hint text © Wikipedia contributors, used under
-  [CC BY-SA 3.0](https://creativecommons.org/licenses/by-sa/3.0/).
+- Chemical structures from [PubChem](https://pubchem.ncbi.nlm.nih.gov/), provided by NCBI at the U.S. National Library of Medicine
+- Hint text from Wikipedia contributors, used under [CC BY-SA 3.0](https://creativecommons.org/licenses/by-sa/3.0/)

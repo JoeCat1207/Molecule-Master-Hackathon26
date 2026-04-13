@@ -1,0 +1,36 @@
+[
+  {"cid": 962,  "display": "Water",             "wiki": "Water",             "answers": ["water", "dihydrogen monoxide"],                      "formula": "H2O",       "level": 1},
+  {"cid": 297,  "display": "Methane",           "wiki": "Methane",           "answers": ["methane"],                                           "formula": "CH4",       "level": 1},
+  {"cid": 222,  "display": "Ammonia",           "wiki": "Ammonia",           "answers": ["ammonia", "azane"],                                  "formula": "NH3",       "level": 1},
+  {"cid": 280,  "display": "Carbon dioxide",    "wiki": "Carbon_dioxide",    "answers": ["carbon dioxide"],                                    "formula": "CO2",       "level": 1},
+  {"cid": 784,  "display": "Hydrogen peroxide", "wiki": "Hydrogen_peroxide", "answers": ["hydrogen peroxide"],                                 "formula": "H2O2",      "level": 1},
+  {"cid": 947,  "display": "Nitrogen",          "wiki": "Nitrogen",          "answers": ["nitrogen", "dinitrogen"],                            "formula": "N2",        "level": 1},
+
+  {"cid": 702,  "display": "Ethanol",           "wiki": "Ethanol",           "answers": ["ethanol", "ethyl alcohol"],                          "formula": "C2H6O",     "level": 2},
+  {"cid": 887,  "display": "Methanol",          "wiki": "Methanol",          "answers": ["methanol", "methyl alcohol"],                        "formula": "CH4O",      "level": 2},
+  {"cid": 176,  "display": "Acetic acid",       "wiki": "Acetic_acid",       "answers": ["acetic acid", "ethanoic acid"],                      "formula": "C2H4O2",    "level": 2},
+  {"cid": 241,  "display": "Benzene",           "wiki": "Benzene",           "answers": ["benzene"],                                           "formula": "C6H6",      "level": 2},
+  {"cid": 6324, "display": "Ethylene",          "wiki": "Ethylene",          "answers": ["ethylene", "ethene"],                                "formula": "C2H4",      "level": 2},
+  {"cid": 6334, "display": "Propane",           "wiki": "Propane",           "answers": ["propane"],                                           "formula": "C3H8",      "level": 2},
+
+  {"cid": 2519, "display": "Caffeine",          "wiki": "Caffeine",          "answers": ["caffeine"],                                          "formula": "C8H10N4O2", "level": 3},
+  {"cid": 2244, "display": "Aspirin",           "wiki": "Aspirin",           "answers": ["aspirin", "acetylsalicylic acid"],                   "formula": "C9H8O4",    "level": 3},
+  {"cid": 180,  "display": "Acetone",           "wiki": "Acetone",           "answers": ["acetone", "propanone", "2-propanone", "dimethyl ketone"], "formula": "C3H6O", "level": 3},
+  {"cid": 1176, "display": "Urea",              "wiki": "Urea",              "answers": ["urea", "carbamide"],                                 "formula": "CH4N2O",    "level": 3},
+  {"cid": 5793, "display": "Glucose",           "wiki": "Glucose",           "answers": ["glucose", "d-glucose", "dextrose"],                  "formula": "C6H12O6",   "level": 3},
+  {"cid": 311,  "display": "Citric acid",       "wiki": "Citric_acid",       "answers": ["citric acid"],                                       "formula": "C6H8O7",    "level": 3},
+
+  {"cid": 5997, "display": "Cholesterol",       "wiki": "Cholesterol",       "answers": ["cholesterol"],                                       "formula": "C27H46O",   "level": 4},
+  {"cid": 6013, "display": "Testosterone",      "wiki": "Testosterone",      "answers": ["testosterone"],                                      "formula": "C19H28O2",  "level": 4},
+  {"cid": 681,  "display": "Dopamine",          "wiki": "Dopamine",          "answers": ["dopamine"],                                          "formula": "C8H11NO2",  "level": 4},
+  {"cid": 5202, "display": "Serotonin",         "wiki": "Serotonin",         "answers": ["serotonin", "5-ht", "5-hydroxytryptamine"],          "formula": "C10H12N2O", "level": 4},
+  {"cid": 5816, "display": "Adrenaline",        "wiki": "Adrenaline",        "answers": ["adrenaline", "epinephrine"],                         "formula": "C9H13NO3",  "level": 4},
+  {"cid": 1983, "display": "Acetaminophen",     "wiki": "Paracetamol",       "answers": ["acetaminophen", "paracetamol", "tylenol"],           "formula": "C8H9NO2",   "level": 4},
+
+  {"cid": 5904,     "display": "Penicillin G",                    "wiki": "Benzylpenicillin",          "answers": ["penicillin", "penicillin g", "benzylpenicillin"],     "formula": "C16H18N2O4S", "level": 5},
+  {"cid": 5957,     "display": "ATP",                             "wiki": "Adenosine_triphosphate",    "answers": ["atp", "adenosine triphosphate"],                      "formula": "C10H16N5O13P3","level": 5},
+  {"cid": 54670067, "display": "Ascorbic acid (vitamin C)",       "wiki": "Vitamin_C",                 "answers": ["ascorbic acid", "vitamin c", "l-ascorbic acid"],      "formula": "C6H8O6",       "level": 5},
+  {"cid": 3034034,  "display": "Quinine",                         "wiki": "Quinine",                   "answers": ["quinine"],                                            "formula": "C20H24N2O2",   "level": 5},
+  {"cid": 6475848,  "display": "Chlorophyll a",                   "wiki": "Chlorophyll_a",             "answers": ["chlorophyll", "chlorophyll a"],                        "formula": "C55H72MgN4O5", "level": 5},
+  {"cid": 5280343,  "display": "Quercetin",                       "wiki": "Quercetin",                 "answers": ["quercetin"],                                          "formula": "C15H10O7",     "level": 5}
+]

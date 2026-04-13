@@ -1,0 +1,726 @@
+[
+  {
+    "id": "err-1-water-extra-h",
+    "level": 1,
+    "moleculeName": "Water (with error)",
+    "description": "This water molecule has a problem. Can you spot it?",
+    "atoms": [
+      {"id": "o1", "element": "O", "x": 200, "y": 200},
+      {"id": "h1", "element": "H", "x": 100, "y": 150},
+      {"id": "h2", "element": "H", "x": 300, "y": 150},
+      {"id": "h3", "element": "H", "x": 200, "y": 100}
+    ],
+    "bonds": [
+      {"id": "b1", "source": "o1", "target": "h1", "order": 1},
+      {"id": "b2", "source": "o1", "target": "h2", "order": 1},
+      {"id": "b3", "source": "o1", "target": "h3", "order": 1}
+    ],
+    "errorAtomIds": ["o1"],
+    "errorBondIds": ["b3"],
+    "explanations": ["Oxygen can only form 2 bonds, but here it has 3. The third hydrogen (and its bond) shouldn't be there."]
+  },
+  {
+    "id": "err-1-methane-missing-h",
+    "level": 1,
+    "moleculeName": "Methane (with error)",
+    "description": "Something is off about this methane molecule.",
+    "atoms": [
+      {"id": "c1", "element": "C", "x": 200, "y": 200},
+      {"id": "h1", "element": "H", "x": 100, "y": 150},
+      {"id": "h2", "element": "H", "x": 300, "y": 150},
+      {"id": "h3", "element": "H", "x": 200, "y": 100}
+    ],
+    "bonds": [
+      {"id": "b1", "source": "c1", "target": "h1", "order": 1},
+      {"id": "b2", "source": "c1", "target": "h2", "order": 1},
+      {"id": "b3", "source": "c1", "target": "h3", "order": 1}
+    ],
+    "errorAtomIds": ["c1"],
+    "errorBondIds": [],
+    "explanations": ["Carbon needs 4 bonds but only has 3 here. Methane (CH4) should have 4 hydrogens bonded to the carbon."]
+  },
+  {
+    "id": "err-1-ammonia-double",
+    "level": 1,
+    "moleculeName": "Ammonia (with error)",
+    "description": "This ammonia molecule has a bond issue.",
+    "atoms": [
+      {"id": "n1", "element": "N", "x": 200, "y": 200},
+      {"id": "h1", "element": "H", "x": 100, "y": 130},
+      {"id": "h2", "element": "H", "x": 300, "y": 130},
+      {"id": "h3", "element": "H", "x": 200, "y": 300}
+    ],
+    "bonds": [
+      {"id": "b1", "source": "n1", "target": "h1", "order": 1},
+      {"id": "b2", "source": "n1", "target": "h2", "order": 2},
+      {"id": "b3", "source": "n1", "target": "h3", "order": 1}
+    ],
+    "errorAtomIds": ["n1"],
+    "errorBondIds": ["b2"],
+    "explanations": ["The N-H bond should be a single bond, not a double bond. With a double bond, nitrogen has 4 bonds but normally forms 3. Hydrogen can only form 1 bond."]
+  },
+  {
+    "id": "err-1-hcl-extra-h",
+    "level": 1,
+    "moleculeName": "Hydrogen chloride (with error)",
+    "description": "Is this HCl molecule correct?",
+    "atoms": [
+      {"id": "cl1", "element": "Cl", "x": 200, "y": 200},
+      {"id": "h1", "element": "H", "x": 100, "y": 150},
+      {"id": "h2", "element": "H", "x": 300, "y": 150}
+    ],
+    "bonds": [
+      {"id": "b1", "source": "cl1", "target": "h1", "order": 1},
+      {"id": "b2", "source": "cl1", "target": "h2", "order": 1}
+    ],
+    "errorAtomIds": ["cl1"],
+    "errorBondIds": ["b2"],
+    "explanations": ["Chlorine can only form 1 bond, but here it has 2. HCl should have just one hydrogen bonded to the chlorine."]
+  },
+  {
+    "id": "err-1-h2-double",
+    "level": 1,
+    "moleculeName": "Hydrogen gas (with error)",
+    "description": "Check the bond in this H2 molecule.",
+    "atoms": [
+      {"id": "h1", "element": "H", "x": 150, "y": 200},
+      {"id": "h2", "element": "H", "x": 350, "y": 200}
+    ],
+    "bonds": [
+      {"id": "b1", "source": "h1", "target": "h2", "order": 2}
+    ],
+    "errorAtomIds": ["h1", "h2"],
+    "errorBondIds": ["b1"],
+    "explanations": ["H2 has a single bond, not a double bond. Each hydrogen can only form 1 bond, but a double bond counts as 2."]
+  },
+  {
+    "id": "err-1-water-double",
+    "level": 1,
+    "moleculeName": "Water (with error)",
+    "description": "This water molecule has a bond type error.",
+    "atoms": [
+      {"id": "o1", "element": "O", "x": 200, "y": 200},
+      {"id": "h1", "element": "H", "x": 100, "y": 130},
+      {"id": "h2", "element": "H", "x": 300, "y": 130}
+    ],
+    "bonds": [
+      {"id": "b1", "source": "o1", "target": "h1", "order": 2},
+      {"id": "b2", "source": "o1", "target": "h2", "order": 1}
+    ],
+    "errorAtomIds": ["h1"],
+    "errorBondIds": ["b1"],
+    "explanations": ["The O-H bond on the left is a double bond, but hydrogen can only form 1 bond. Both O-H bonds in water should be single bonds."]
+  },
+
+  {
+    "id": "err-2-ethanol-double",
+    "level": 2,
+    "moleculeName": "Ethanol (with error)",
+    "description": "This ethanol structure has an incorrect bond type.",
+    "atoms": [
+      {"id": "c1", "element": "C", "x": 100, "y": 200},
+      {"id": "c2", "element": "C", "x": 250, "y": 200},
+      {"id": "o1", "element": "O", "x": 400, "y": 200},
+      {"id": "h1", "element": "H", "x": 50,  "y": 120},
+      {"id": "h2", "element": "H", "x": 50,  "y": 280},
+      {"id": "h3", "element": "H", "x": 150, "y": 120},
+      {"id": "h4", "element": "H", "x": 200, "y": 280},
+      {"id": "h5", "element": "H", "x": 300, "y": 120},
+      {"id": "h6", "element": "H", "x": 450, "y": 200}
+    ],
+    "bonds": [
+      {"id": "b1", "source": "c1", "target": "c2", "order": 2},
+      {"id": "b2", "source": "c2", "target": "o1", "order": 1},
+      {"id": "b3", "source": "c1", "target": "h1", "order": 1},
+      {"id": "b4", "source": "c1", "target": "h2", "order": 1},
+      {"id": "b5", "source": "c1", "target": "h3", "order": 1},
+      {"id": "b6", "source": "c2", "target": "h4", "order": 1},
+      {"id": "b7", "source": "c2", "target": "h5", "order": 1},
+      {"id": "b8", "source": "o1", "target": "h6", "order": 1}
+    ],
+    "errorAtomIds": ["c1", "c2"],
+    "errorBondIds": ["b1"],
+    "explanations": ["The C-C bond in ethanol should be a single bond, not a double bond. With a double bond, the carbons would be over-bonded (carbon 1 has 5 bonds total)."]
+  },
+  {
+    "id": "err-2-co2-single",
+    "level": 2,
+    "moleculeName": "Carbon dioxide (with error)",
+    "description": "Check the bonds in this CO2 molecule.",
+    "atoms": [
+      {"id": "o1", "element": "O", "x": 100, "y": 200},
+      {"id": "c1", "element": "C", "x": 250, "y": 200},
+      {"id": "o2", "element": "O", "x": 400, "y": 200}
+    ],
+    "bonds": [
+      {"id": "b1", "source": "o1", "target": "c1", "order": 2},
+      {"id": "b2", "source": "c1", "target": "o2", "order": 1}
+    ],
+    "errorAtomIds": ["c1", "o2"],
+    "errorBondIds": ["b2"],
+    "explanations": ["The C=O bond on the right should be a double bond, not a single bond. Carbon needs 4 bonds total, and oxygen on the right only has 1."]
+  },
+  {
+    "id": "err-2-ethane-extra-bond",
+    "level": 2,
+    "moleculeName": "Ethane (with error)",
+    "description": "This ethane molecule has a problem with its structure.",
+    "atoms": [
+      {"id": "c1", "element": "C", "x": 150, "y": 200},
+      {"id": "c2", "element": "C", "x": 350, "y": 200},
+      {"id": "h1", "element": "H", "x": 80, "y": 120},
+      {"id": "h2", "element": "H", "x": 80, "y": 280},
+      {"id": "h3", "element": "H", "x": 150, "y": 100},
+      {"id": "h4", "element": "H", "x": 420, "y": 120},
+      {"id": "h5", "element": "H", "x": 420, "y": 280},
+      {"id": "h6", "element": "H", "x": 350, "y": 100}
+    ],
+    "bonds": [
+      {"id": "b1", "source": "c1", "target": "c2", "order": 2},
+      {"id": "b2", "source": "c1", "target": "h1", "order": 1},
+      {"id": "b3", "source": "c1", "target": "h2", "order": 1},
+      {"id": "b4", "source": "c1", "target": "h3", "order": 1},
+      {"id": "b5", "source": "c2", "target": "h4", "order": 1},
+      {"id": "b6", "source": "c2", "target": "h5", "order": 1},
+      {"id": "b7", "source": "c2", "target": "h6", "order": 1}
+    ],
+    "errorAtomIds": ["c1", "c2"],
+    "errorBondIds": ["b1"],
+    "explanations": ["Ethane (C2H6) has a single bond between the two carbons, not a double bond. With a double bond, each carbon has 5 bonds total which exceeds carbon's valence of 4."]
+  },
+  {
+    "id": "err-2-h2o2-double",
+    "level": 2,
+    "moleculeName": "Hydrogen peroxide (with error)",
+    "description": "This hydrogen peroxide molecule has an incorrect bond.",
+    "atoms": [
+      {"id": "o1", "element": "O", "x": 150, "y": 200},
+      {"id": "o2", "element": "O", "x": 350, "y": 200},
+      {"id": "h1", "element": "H", "x": 70, "y": 130},
+      {"id": "h2", "element": "H", "x": 430, "y": 130}
+    ],
+    "bonds": [
+      {"id": "b1", "source": "o1", "target": "o2", "order": 2},
+      {"id": "b2", "source": "o1", "target": "h1", "order": 1},
+      {"id": "b3", "source": "o2", "target": "h2", "order": 1}
+    ],
+    "errorAtomIds": ["o1", "o2"],
+    "errorBondIds": ["b1"],
+    "explanations": ["The O-O bond in hydrogen peroxide should be a single bond, not a double bond. Each oxygen already has one bond to hydrogen, so a double bond would give each oxygen 3 bonds — exceeding its valence of 2."]
+  },
+  {
+    "id": "err-2-methane-extra",
+    "level": 2,
+    "moleculeName": "Methane (with error)",
+    "description": "This methane has too many atoms.",
+    "atoms": [
+      {"id": "c1", "element": "C", "x": 200, "y": 200},
+      {"id": "h1", "element": "H", "x": 100, "y": 130},
+      {"id": "h2", "element": "H", "x": 300, "y": 130},
+      {"id": "h3", "element": "H", "x": 130, "y": 300},
+      {"id": "h4", "element": "H", "x": 270, "y": 300},
+      {"id": "h5", "element": "H", "x": 200, "y": 90}
+    ],
+    "bonds": [
+      {"id": "b1", "source": "c1", "target": "h1", "order": 1},
+      {"id": "b2", "source": "c1", "target": "h2", "order": 1},
+      {"id": "b3", "source": "c1", "target": "h3", "order": 1},
+      {"id": "b4", "source": "c1", "target": "h4", "order": 1},
+      {"id": "b5", "source": "c1", "target": "h5", "order": 1}
+    ],
+    "errorAtomIds": ["c1"],
+    "errorBondIds": ["b5"],
+    "explanations": ["Carbon can only form 4 bonds, but here it has 5. One hydrogen and its bond need to be removed. Methane is CH4, not CH5."]
+  },
+  {
+    "id": "err-2-formaldehyde-single",
+    "level": 2,
+    "moleculeName": "Formaldehyde (with error)",
+    "description": "Check the bond types in this formaldehyde molecule.",
+    "atoms": [
+      {"id": "c1", "element": "C", "x": 200, "y": 200},
+      {"id": "o1", "element": "O", "x": 350, "y": 200},
+      {"id": "h1", "element": "H", "x": 100, "y": 130},
+      {"id": "h2", "element": "H", "x": 100, "y": 270}
+    ],
+    "bonds": [
+      {"id": "b1", "source": "c1", "target": "o1", "order": 1},
+      {"id": "b2", "source": "c1", "target": "h1", "order": 1},
+      {"id": "b3", "source": "c1", "target": "h2", "order": 1}
+    ],
+    "errorAtomIds": ["c1", "o1"],
+    "errorBondIds": ["b1"],
+    "explanations": ["The C-O bond in formaldehyde (CH2O) should be a double bond, not a single bond. Carbon only has 3 bonds here but needs 4, and oxygen only has 1 but needs 2."]
+  },
+
+  {
+    "id": "err-3-acetone-wrong",
+    "level": 3,
+    "moleculeName": "Acetone (with error)",
+    "description": "This acetone molecule has an error in its structure.",
+    "atoms": [
+      {"id": "c1", "element": "C", "x": 100, "y": 200},
+      {"id": "c2", "element": "C", "x": 250, "y": 200},
+      {"id": "c3", "element": "C", "x": 400, "y": 200},
+      {"id": "o1", "element": "O", "x": 250, "y": 80},
+      {"id": "h1", "element": "H", "x": 50,  "y": 120},
+      {"id": "h2", "element": "H", "x": 50,  "y": 280},
+      {"id": "h3", "element": "H", "x": 150, "y": 120},
+      {"id": "h4", "element": "H", "x": 450, "y": 120},
+      {"id": "h5", "element": "H", "x": 450, "y": 280},
+      {"id": "h6", "element": "H", "x": 350, "y": 280}
+    ],
+    "bonds": [
+      {"id": "b1", "source": "c1", "target": "c2", "order": 1},
+      {"id": "b2", "source": "c2", "target": "c3", "order": 1},
+      {"id": "b3", "source": "c2", "target": "o1", "order": 1},
+      {"id": "b4", "source": "c1", "target": "h1", "order": 1},
+      {"id": "b5", "source": "c1", "target": "h2", "order": 1},
+      {"id": "b6", "source": "c1", "target": "h3", "order": 1},
+      {"id": "b7", "source": "c3", "target": "h4", "order": 1},
+      {"id": "b8", "source": "c3", "target": "h5", "order": 1},
+      {"id": "b9", "source": "c3", "target": "h6", "order": 1}
+    ],
+    "errorAtomIds": ["c2"],
+    "errorBondIds": ["b3"],
+    "explanations": ["The C=O bond in acetone should be a double bond, not a single bond. The central carbon only has 3 bonds but needs 4. Acetone has a carbonyl group (C=O)."]
+  },
+  {
+    "id": "err-3-nitrogen-triple",
+    "level": 3,
+    "moleculeName": "Nitrogen gas (with error)",
+    "description": "Is this N2 molecule drawn correctly?",
+    "atoms": [
+      {"id": "n1", "element": "N", "x": 150, "y": 200},
+      {"id": "n2", "element": "N", "x": 350, "y": 200}
+    ],
+    "bonds": [
+      {"id": "b1", "source": "n1", "target": "n2", "order": 2}
+    ],
+    "errorAtomIds": ["n1", "n2"],
+    "errorBondIds": ["b1"],
+    "explanations": ["N2 has a triple bond, not a double bond. Each nitrogen needs 3 bonds, but a double bond only provides 2 each."]
+  },
+  {
+    "id": "err-3-methanol-missing-oh",
+    "level": 3,
+    "moleculeName": "Methanol (with error)",
+    "description": "This methanol molecule is missing something important.",
+    "atoms": [
+      {"id": "c1", "element": "C", "x": 200, "y": 200},
+      {"id": "o1", "element": "O", "x": 350, "y": 200},
+      {"id": "h1", "element": "H", "x": 100, "y": 130},
+      {"id": "h2", "element": "H", "x": 100, "y": 270},
+      {"id": "h3", "element": "H", "x": 200, "y": 100}
+    ],
+    "bonds": [
+      {"id": "b1", "source": "c1", "target": "o1", "order": 1},
+      {"id": "b2", "source": "c1", "target": "h1", "order": 1},
+      {"id": "b3", "source": "c1", "target": "h2", "order": 1},
+      {"id": "b4", "source": "c1", "target": "h3", "order": 1}
+    ],
+    "errorAtomIds": ["o1"],
+    "errorBondIds": [],
+    "explanations": ["Oxygen in methanol has only 1 bond but needs 2. Methanol (CH3OH) should have a hydrogen bonded to the oxygen — that's the hydroxyl (-OH) group."]
+  },
+  {
+    "id": "err-3-propane-triple",
+    "level": 3,
+    "moleculeName": "Propane (with error)",
+    "description": "This propane molecule has an incorrect bond.",
+    "atoms": [
+      {"id": "c1", "element": "C", "x": 100, "y": 200},
+      {"id": "c2", "element": "C", "x": 250, "y": 200},
+      {"id": "c3", "element": "C", "x": 400, "y": 200},
+      {"id": "h1", "element": "H", "x": 50, "y": 120},
+      {"id": "h2", "element": "H", "x": 50, "y": 280},
+      {"id": "h3", "element": "H", "x": 100, "y": 100},
+      {"id": "h4", "element": "H", "x": 250, "y": 100},
+      {"id": "h5", "element": "H", "x": 250, "y": 300},
+      {"id": "h6", "element": "H", "x": 450, "y": 120},
+      {"id": "h7", "element": "H", "x": 450, "y": 280},
+      {"id": "h8", "element": "H", "x": 400, "y": 100}
+    ],
+    "bonds": [
+      {"id": "b1", "source": "c1", "target": "c2", "order": 3},
+      {"id": "b2", "source": "c2", "target": "c3", "order": 1},
+      {"id": "b3", "source": "c1", "target": "h1", "order": 1},
+      {"id": "b4", "source": "c1", "target": "h2", "order": 1},
+      {"id": "b5", "source": "c1", "target": "h3", "order": 1},
+      {"id": "b6", "source": "c2", "target": "h4", "order": 1},
+      {"id": "b7", "source": "c2", "target": "h5", "order": 1},
+      {"id": "b8", "source": "c3", "target": "h6", "order": 1},
+      {"id": "b9", "source": "c3", "target": "h7", "order": 1},
+      {"id": "b10", "source": "c3", "target": "h8", "order": 1}
+    ],
+    "errorAtomIds": ["c1", "c2"],
+    "errorBondIds": ["b1"],
+    "explanations": ["Propane is fully saturated — all C-C bonds should be single bonds. The triple bond between C1 and C2 gives C1 six bonds and C2 six bonds, far exceeding carbon's valence of 4."]
+  },
+  {
+    "id": "err-3-ethylene-single",
+    "level": 3,
+    "moleculeName": "Ethylene (with error)",
+    "description": "Something is wrong with this ethylene molecule.",
+    "atoms": [
+      {"id": "c1", "element": "C", "x": 150, "y": 200},
+      {"id": "c2", "element": "C", "x": 350, "y": 200},
+      {"id": "h1", "element": "H", "x": 80, "y": 120},
+      {"id": "h2", "element": "H", "x": 80, "y": 280},
+      {"id": "h3", "element": "H", "x": 420, "y": 120},
+      {"id": "h4", "element": "H", "x": 420, "y": 280}
+    ],
+    "bonds": [
+      {"id": "b1", "source": "c1", "target": "c2", "order": 1},
+      {"id": "b2", "source": "c1", "target": "h1", "order": 1},
+      {"id": "b3", "source": "c1", "target": "h2", "order": 1},
+      {"id": "b4", "source": "c2", "target": "h3", "order": 1},
+      {"id": "b5", "source": "c2", "target": "h4", "order": 1}
+    ],
+    "errorAtomIds": ["c1", "c2"],
+    "errorBondIds": ["b1"],
+    "explanations": ["Ethylene (C2H4) has a double bond between carbons, not a single bond. Each carbon only has 3 bonds here but needs 4."]
+  },
+  {
+    "id": "err-3-acetic-single-co",
+    "level": 3,
+    "moleculeName": "Acetic acid (with error)",
+    "description": "This acetic acid has a bond problem in the carboxyl group.",
+    "atoms": [
+      {"id": "c1", "element": "C", "x": 120, "y": 200},
+      {"id": "c2", "element": "C", "x": 280, "y": 200},
+      {"id": "o1", "element": "O", "x": 400, "y": 130},
+      {"id": "o2", "element": "O", "x": 400, "y": 270},
+      {"id": "h1", "element": "H", "x": 50, "y": 120},
+      {"id": "h2", "element": "H", "x": 50, "y": 280},
+      {"id": "h3", "element": "H", "x": 120, "y": 100},
+      {"id": "h4", "element": "H", "x": 470, "y": 270}
+    ],
+    "bonds": [
+      {"id": "b1", "source": "c1", "target": "c2", "order": 1},
+      {"id": "b2", "source": "c2", "target": "o1", "order": 1},
+      {"id": "b3", "source": "c2", "target": "o2", "order": 1},
+      {"id": "b4", "source": "c1", "target": "h1", "order": 1},
+      {"id": "b5", "source": "c1", "target": "h2", "order": 1},
+      {"id": "b6", "source": "c1", "target": "h3", "order": 1},
+      {"id": "b7", "source": "o2", "target": "h4", "order": 1}
+    ],
+    "errorAtomIds": ["c2", "o1"],
+    "errorBondIds": ["b2"],
+    "explanations": ["The C=O bond to the carbonyl oxygen should be a double bond. The carboxyl group has one C=O and one C-OH. Here carbon only has 3 bonds but needs 4."]
+  },
+
+  {
+    "id": "err-4-formaldehyde-triple",
+    "level": 4,
+    "moleculeName": "Formaldehyde (with error)",
+    "description": "This formaldehyde has an incorrect bond order.",
+    "atoms": [
+      {"id": "c1", "element": "C", "x": 200, "y": 200},
+      {"id": "o1", "element": "O", "x": 350, "y": 200},
+      {"id": "h1", "element": "H", "x": 100, "y": 130},
+      {"id": "h2", "element": "H", "x": 100, "y": 270}
+    ],
+    "bonds": [
+      {"id": "b1", "source": "c1", "target": "o1", "order": 3},
+      {"id": "b2", "source": "c1", "target": "h1", "order": 1},
+      {"id": "b3", "source": "c1", "target": "h2", "order": 1}
+    ],
+    "errorAtomIds": ["c1", "o1"],
+    "errorBondIds": ["b1"],
+    "explanations": ["The C-O bond in formaldehyde should be a double bond, not a triple bond. With a triple bond, carbon has 5 bonds exceeding its valence of 4, and oxygen has 3 exceeding its valence of 2."]
+  },
+  {
+    "id": "err-4-propane-double",
+    "level": 4,
+    "moleculeName": "Propane (with error)",
+    "description": "Something is wrong with this propane molecule.",
+    "atoms": [
+      {"id": "c1", "element": "C", "x": 100, "y": 200},
+      {"id": "c2", "element": "C", "x": 250, "y": 200},
+      {"id": "c3", "element": "C", "x": 400, "y": 200},
+      {"id": "h1", "element": "H", "x": 50, "y": 120},
+      {"id": "h2", "element": "H", "x": 50, "y": 280},
+      {"id": "h3", "element": "H", "x": 100, "y": 100},
+      {"id": "h4", "element": "H", "x": 250, "y": 100},
+      {"id": "h5", "element": "H", "x": 250, "y": 300},
+      {"id": "h6", "element": "H", "x": 450, "y": 120},
+      {"id": "h7", "element": "H", "x": 450, "y": 280},
+      {"id": "h8", "element": "H", "x": 400, "y": 100}
+    ],
+    "bonds": [
+      {"id": "b1", "source": "c1", "target": "c2", "order": 1},
+      {"id": "b2", "source": "c2", "target": "c3", "order": 2},
+      {"id": "b3", "source": "c1", "target": "h1", "order": 1},
+      {"id": "b4", "source": "c1", "target": "h2", "order": 1},
+      {"id": "b5", "source": "c1", "target": "h3", "order": 1},
+      {"id": "b6", "source": "c2", "target": "h4", "order": 1},
+      {"id": "b7", "source": "c2", "target": "h5", "order": 1},
+      {"id": "b8", "source": "c3", "target": "h6", "order": 1},
+      {"id": "b9", "source": "c3", "target": "h7", "order": 1},
+      {"id": "b10", "source": "c3", "target": "h8", "order": 1}
+    ],
+    "errorAtomIds": ["c2", "c3"],
+    "errorBondIds": ["b2"],
+    "explanations": ["Propane is fully saturated — all C-C bonds should be single bonds. The double bond between C2 and C3 gives each 5 bonds, exceeding carbon's valence of 4."]
+  },
+  {
+    "id": "err-4-hcn-single",
+    "level": 4,
+    "moleculeName": "Hydrogen cyanide (with error)",
+    "description": "Check the bond types in this HCN molecule.",
+    "atoms": [
+      {"id": "h1", "element": "H", "x": 100, "y": 200},
+      {"id": "c1", "element": "C", "x": 250, "y": 200},
+      {"id": "n1", "element": "N", "x": 400, "y": 200}
+    ],
+    "bonds": [
+      {"id": "b1", "source": "h1", "target": "c1", "order": 1},
+      {"id": "b2", "source": "c1", "target": "n1", "order": 2}
+    ],
+    "errorAtomIds": ["c1", "n1"],
+    "errorBondIds": ["b2"],
+    "explanations": ["HCN has a triple bond between carbon and nitrogen, not a double bond. Carbon needs 4 bonds (1 from H + 3 from triple), and nitrogen needs 3 (all from triple)."]
+  },
+  {
+    "id": "err-4-ethanol-missing-oh",
+    "level": 4,
+    "moleculeName": "Ethanol (with error)",
+    "description": "This ethanol is missing an important part.",
+    "atoms": [
+      {"id": "c1", "element": "C", "x": 120, "y": 200},
+      {"id": "c2", "element": "C", "x": 280, "y": 200},
+      {"id": "o1", "element": "O", "x": 420, "y": 200},
+      {"id": "h1", "element": "H", "x": 50, "y": 130},
+      {"id": "h2", "element": "H", "x": 50, "y": 270},
+      {"id": "h3", "element": "H", "x": 120, "y": 100},
+      {"id": "h4", "element": "H", "x": 280, "y": 100},
+      {"id": "h5", "element": "H", "x": 280, "y": 300}
+    ],
+    "bonds": [
+      {"id": "b1", "source": "c1", "target": "c2", "order": 1},
+      {"id": "b2", "source": "c2", "target": "o1", "order": 1},
+      {"id": "b3", "source": "c1", "target": "h1", "order": 1},
+      {"id": "b4", "source": "c1", "target": "h2", "order": 1},
+      {"id": "b5", "source": "c1", "target": "h3", "order": 1},
+      {"id": "b6", "source": "c2", "target": "h4", "order": 1},
+      {"id": "b7", "source": "c2", "target": "h5", "order": 1}
+    ],
+    "errorAtomIds": ["o1"],
+    "errorBondIds": [],
+    "explanations": ["Oxygen in ethanol only has 1 bond but needs 2. Ethanol (C2H5OH) should have a hydrogen bonded to the oxygen — that's the hydroxyl (-OH) group that makes it an alcohol."]
+  },
+  {
+    "id": "err-4-urea-all-single",
+    "level": 4,
+    "moleculeName": "Urea (with error)",
+    "description": "This urea molecule has a structural problem.",
+    "atoms": [
+      {"id": "c1", "element": "C", "x": 250, "y": 200},
+      {"id": "o1", "element": "O", "x": 250, "y": 80},
+      {"id": "n1", "element": "N", "x": 120, "y": 260},
+      {"id": "n2", "element": "N", "x": 380, "y": 260},
+      {"id": "h1", "element": "H", "x": 50, "y": 220},
+      {"id": "h2", "element": "H", "x": 80, "y": 340},
+      {"id": "h3", "element": "H", "x": 420, "y": 340},
+      {"id": "h4", "element": "H", "x": 450, "y": 220}
+    ],
+    "bonds": [
+      {"id": "b1", "source": "c1", "target": "o1", "order": 1},
+      {"id": "b2", "source": "c1", "target": "n1", "order": 1},
+      {"id": "b3", "source": "c1", "target": "n2", "order": 1},
+      {"id": "b4", "source": "n1", "target": "h1", "order": 1},
+      {"id": "b5", "source": "n1", "target": "h2", "order": 1},
+      {"id": "b6", "source": "n2", "target": "h3", "order": 1},
+      {"id": "b7", "source": "n2", "target": "h4", "order": 1}
+    ],
+    "errorAtomIds": ["c1"],
+    "errorBondIds": ["b1"],
+    "explanations": ["The C=O bond in urea should be a double bond, not single. Carbon only has 3 bonds but needs 4. Urea has a carbonyl group (C=O) flanked by two -NH2 groups."]
+  },
+  {
+    "id": "err-4-acetaldehyde-single",
+    "level": 4,
+    "moleculeName": "Acetaldehyde (with error)",
+    "description": "Check the carbonyl group in this acetaldehyde.",
+    "atoms": [
+      {"id": "c1", "element": "C", "x": 120, "y": 200},
+      {"id": "c2", "element": "C", "x": 280, "y": 200},
+      {"id": "o1", "element": "O", "x": 380, "y": 100},
+      {"id": "h1", "element": "H", "x": 50, "y": 130},
+      {"id": "h2", "element": "H", "x": 50, "y": 270},
+      {"id": "h3", "element": "H", "x": 120, "y": 100},
+      {"id": "h4", "element": "H", "x": 380, "y": 250}
+    ],
+    "bonds": [
+      {"id": "b1", "source": "c1", "target": "c2", "order": 1},
+      {"id": "b2", "source": "c2", "target": "o1", "order": 1},
+      {"id": "b3", "source": "c1", "target": "h1", "order": 1},
+      {"id": "b4", "source": "c1", "target": "h2", "order": 1},
+      {"id": "b5", "source": "c1", "target": "h3", "order": 1},
+      {"id": "b6", "source": "c2", "target": "h4", "order": 1}
+    ],
+    "errorAtomIds": ["c2", "o1"],
+    "errorBondIds": ["b2"],
+    "explanations": ["Acetaldehyde has a carbonyl group — the C=O should be a double bond. Carbon only has 3 bonds here but needs 4, and oxygen only has 1 but needs 2."]
+  },
+
+  {
+    "id": "err-5-urea-single-co",
+    "level": 5,
+    "moleculeName": "Urea (with error)",
+    "description": "This urea molecule has a structural problem.",
+    "atoms": [
+      {"id": "c1", "element": "C", "x": 250, "y": 200},
+      {"id": "o1", "element": "O", "x": 250, "y": 80},
+      {"id": "n1", "element": "N", "x": 120, "y": 280},
+      {"id": "n2", "element": "N", "x": 380, "y": 280},
+      {"id": "h1", "element": "H", "x": 40, "y": 240},
+      {"id": "h2", "element": "H", "x": 80, "y": 360},
+      {"id": "h3", "element": "H", "x": 420, "y": 360},
+      {"id": "h4", "element": "H", "x": 460, "y": 240},
+      {"id": "h5", "element": "H", "x": 250, "y": 340}
+    ],
+    "bonds": [
+      {"id": "b1", "source": "c1", "target": "o1", "order": 2},
+      {"id": "b2", "source": "c1", "target": "n1", "order": 1},
+      {"id": "b3", "source": "c1", "target": "n2", "order": 1},
+      {"id": "b4", "source": "n1", "target": "h1", "order": 1},
+      {"id": "b5", "source": "n1", "target": "h2", "order": 1},
+      {"id": "b6", "source": "n2", "target": "h3", "order": 1},
+      {"id": "b7", "source": "n2", "target": "h4", "order": 1},
+      {"id": "b8", "source": "n1", "target": "h5", "order": 1}
+    ],
+    "errorAtomIds": ["n1"],
+    "errorBondIds": ["b8"],
+    "explanations": ["Nitrogen in the left NH2 group has 3 bonds (correct) plus a fourth bond to an extra hydrogen, giving it 4 bonds. But nitrogen normally forms only 3 bonds. Remove the extra H."]
+  },
+  {
+    "id": "err-5-ethylene-triple",
+    "level": 5,
+    "moleculeName": "Ethylene (with error)",
+    "description": "This ethylene has an incorrect bond order.",
+    "atoms": [
+      {"id": "c1", "element": "C", "x": 150, "y": 200},
+      {"id": "c2", "element": "C", "x": 350, "y": 200},
+      {"id": "h1", "element": "H", "x": 80, "y": 120},
+      {"id": "h2", "element": "H", "x": 80, "y": 280},
+      {"id": "h3", "element": "H", "x": 420, "y": 120},
+      {"id": "h4", "element": "H", "x": 420, "y": 280}
+    ],
+    "bonds": [
+      {"id": "b1", "source": "c1", "target": "c2", "order": 3},
+      {"id": "b2", "source": "c1", "target": "h1", "order": 1},
+      {"id": "b3", "source": "c1", "target": "h2", "order": 1},
+      {"id": "b4", "source": "c2", "target": "h3", "order": 1},
+      {"id": "b5", "source": "c2", "target": "h4", "order": 1}
+    ],
+    "errorAtomIds": ["c1", "c2"],
+    "errorBondIds": ["b1"],
+    "explanations": ["Ethylene (C2H4) has a double bond between carbons, not a triple bond. With a triple bond, each carbon would have 5 bonds (3+1+1), exceeding the valence of 4."]
+  },
+  {
+    "id": "err-5-acetic-acid-double-oh",
+    "level": 5,
+    "moleculeName": "Acetic acid (with error)",
+    "description": "This acetic acid has both C-O bonds wrong.",
+    "atoms": [
+      {"id": "c1", "element": "C", "x": 120, "y": 200},
+      {"id": "c2", "element": "C", "x": 280, "y": 200},
+      {"id": "o1", "element": "O", "x": 400, "y": 120},
+      {"id": "o2", "element": "O", "x": 400, "y": 280},
+      {"id": "h1", "element": "H", "x": 50, "y": 120},
+      {"id": "h2", "element": "H", "x": 50, "y": 280},
+      {"id": "h3", "element": "H", "x": 120, "y": 100},
+      {"id": "h4", "element": "H", "x": 470, "y": 280}
+    ],
+    "bonds": [
+      {"id": "b1", "source": "c1", "target": "c2", "order": 1},
+      {"id": "b2", "source": "c2", "target": "o1", "order": 2},
+      {"id": "b3", "source": "c2", "target": "o2", "order": 2},
+      {"id": "b4", "source": "c1", "target": "h1", "order": 1},
+      {"id": "b5", "source": "c1", "target": "h2", "order": 1},
+      {"id": "b6", "source": "c1", "target": "h3", "order": 1},
+      {"id": "b7", "source": "o2", "target": "h4", "order": 1}
+    ],
+    "errorAtomIds": ["c2", "o2"],
+    "errorBondIds": ["b3"],
+    "explanations": ["In acetic acid, only one C-O bond is a double bond (C=O carbonyl). The other is a single bond to the hydroxyl (-OH). Here both are double bonds, giving carbon 5 bonds and the bottom oxygen 3 bonds."]
+  },
+  {
+    "id": "err-5-methanol-double-co",
+    "level": 5,
+    "moleculeName": "Methanol (with error)",
+    "description": "Check the bond types in this methanol.",
+    "atoms": [
+      {"id": "c1", "element": "C", "x": 180, "y": 200},
+      {"id": "o1", "element": "O", "x": 340, "y": 200},
+      {"id": "h1", "element": "H", "x": 80, "y": 130},
+      {"id": "h2", "element": "H", "x": 80, "y": 270},
+      {"id": "h3", "element": "H", "x": 180, "y": 100},
+      {"id": "h4", "element": "H", "x": 430, "y": 200}
+    ],
+    "bonds": [
+      {"id": "b1", "source": "c1", "target": "o1", "order": 2},
+      {"id": "b2", "source": "c1", "target": "h1", "order": 1},
+      {"id": "b3", "source": "c1", "target": "h2", "order": 1},
+      {"id": "b4", "source": "c1", "target": "h3", "order": 1},
+      {"id": "b5", "source": "o1", "target": "h4", "order": 1}
+    ],
+    "errorAtomIds": ["c1", "o1"],
+    "errorBondIds": ["b1"],
+    "explanations": ["The C-O bond in methanol should be a single bond, not a double bond. With a double bond, carbon has 5 bonds (exceeding 4) and oxygen has 3 bonds (exceeding 2). Methanol has no carbonyl group."]
+  },
+  {
+    "id": "err-5-propanol-missing-h",
+    "level": 5,
+    "moleculeName": "Propanol (with error)",
+    "description": "This propanol molecule has an incomplete structure.",
+    "atoms": [
+      {"id": "c1", "element": "C", "x": 100, "y": 200},
+      {"id": "c2", "element": "C", "x": 230, "y": 200},
+      {"id": "c3", "element": "C", "x": 360, "y": 200},
+      {"id": "o1", "element": "O", "x": 480, "y": 200},
+      {"id": "h1", "element": "H", "x": 40, "y": 130},
+      {"id": "h2", "element": "H", "x": 40, "y": 270},
+      {"id": "h3", "element": "H", "x": 100, "y": 100},
+      {"id": "h4", "element": "H", "x": 230, "y": 100},
+      {"id": "h5", "element": "H", "x": 230, "y": 300},
+      {"id": "h6", "element": "H", "x": 360, "y": 100},
+      {"id": "h7", "element": "H", "x": 360, "y": 300}
+    ],
+    "bonds": [
+      {"id": "b1", "source": "c1", "target": "c2", "order": 1},
+      {"id": "b2", "source": "c2", "target": "c3", "order": 1},
+      {"id": "b3", "source": "c3", "target": "o1", "order": 1},
+      {"id": "b4", "source": "c1", "target": "h1", "order": 1},
+      {"id": "b5", "source": "c1", "target": "h2", "order": 1},
+      {"id": "b6", "source": "c1", "target": "h3", "order": 1},
+      {"id": "b7", "source": "c2", "target": "h4", "order": 1},
+      {"id": "b8", "source": "c2", "target": "h5", "order": 1},
+      {"id": "b9", "source": "c3", "target": "h6", "order": 1},
+      {"id": "b10", "source": "c3", "target": "h7", "order": 1}
+    ],
+    "errorAtomIds": ["o1"],
+    "errorBondIds": [],
+    "explanations": ["Oxygen only has 1 bond but needs 2. Propanol (C3H7OH) should have a hydrogen bonded to the oxygen to complete the hydroxyl (-OH) group."]
+  },
+  {
+    "id": "err-5-hcn-double",
+    "level": 5,
+    "moleculeName": "Hydrogen cyanide (with error)",
+    "description": "HCN has a specific bond order requirement.",
+    "atoms": [
+      {"id": "h1", "element": "H", "x": 100, "y": 200},
+      {"id": "c1", "element": "C", "x": 250, "y": 200},
+      {"id": "n1", "element": "N", "x": 400, "y": 200}
+    ],
+    "bonds": [
+      {"id": "b1", "source": "h1", "target": "c1", "order": 2},
+      {"id": "b2", "source": "c1", "target": "n1", "order": 3}
+    ],
+    "errorAtomIds": ["h1", "c1"],
+    "errorBondIds": ["b1"],
+    "explanations": ["The H-C bond should be a single bond, not a double bond. Hydrogen can only form 1 bond, and with a double bond carbon would have 5 bonds (2+3) exceeding its valence of 4."]
+  }
+]

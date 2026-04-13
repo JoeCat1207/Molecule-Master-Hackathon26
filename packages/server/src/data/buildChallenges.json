@@ -1,0 +1,36 @@
+[
+  {"id": "build-1-water",    "level": 1, "targetName": "Water",            "targetFormula": "H2O",   "targetCid": 962,  "hint": "Two hydrogens bonded to one oxygen", "expectedAtoms": {"H": 2, "O": 1}},
+  {"id": "build-1-methane",  "level": 1, "targetName": "Methane",          "targetFormula": "CH4",   "targetCid": 297,  "hint": "Carbon with four single bonds to hydrogen", "expectedAtoms": {"C": 1, "H": 4}},
+  {"id": "build-1-ammonia",  "level": 1, "targetName": "Ammonia",          "targetFormula": "NH3",   "targetCid": 222,  "hint": "Nitrogen bonded to three hydrogens", "expectedAtoms": {"N": 1, "H": 3}},
+  {"id": "build-1-hcl",      "level": 1, "targetName": "Hydrogen chloride","targetFormula": "HCl",   "targetCid": 313,  "hint": "One hydrogen bonded to one chlorine", "expectedAtoms": {"H": 1, "Cl": 1}},
+  {"id": "build-1-h2",       "level": 1, "targetName": "Hydrogen gas",     "targetFormula": "H2",    "targetCid": 783,  "hint": "Two hydrogen atoms with a single bond", "expectedAtoms": {"H": 2}},
+  {"id": "build-1-hf",       "level": 1, "targetName": "Hydrogen fluoride","targetFormula": "HF",    "targetCid": 14917,"hint": "One hydrogen bonded to one fluorine", "expectedAtoms": {"H": 1, "F": 1}},
+
+  {"id": "build-2-ethane",   "level": 2, "targetName": "Ethane",           "targetFormula": "C2H6",  "targetCid": 6324, "hint": "Two carbons with a single bond, each with three hydrogens", "expectedAtoms": {"C": 2, "H": 6}},
+  {"id": "build-2-ethanol",  "level": 2, "targetName": "Ethanol",          "targetFormula": "C2H6O", "targetCid": 702,  "hint": "Ethane but with one hydrogen replaced by an -OH group", "expectedAtoms": {"C": 2, "H": 6, "O": 1}},
+  {"id": "build-2-co2",      "level": 2, "targetName": "Carbon dioxide",   "targetFormula": "CO2",   "targetCid": 280,  "hint": "Carbon double-bonded to two oxygens", "expectedAtoms": {"C": 1, "O": 2}},
+  {"id": "build-2-formaldehyde","level": 2, "targetName": "Formaldehyde",  "targetFormula": "CH2O",  "targetCid": 712,  "hint": "Carbon double-bonded to oxygen, single-bonded to two hydrogens", "expectedAtoms": {"C": 1, "H": 2, "O": 1}},
+  {"id": "build-2-ethylene", "level": 2, "targetName": "Ethylene",         "targetFormula": "C2H4",  "targetCid": 6325, "hint": "Two carbons connected by a double bond, each with two hydrogens", "expectedAtoms": {"C": 2, "H": 4}},
+  {"id": "build-2-h2o2",     "level": 2, "targetName": "Hydrogen peroxide","targetFormula": "H2O2",  "targetCid": 784,  "hint": "Two oxygens single-bonded together, each with one hydrogen", "expectedAtoms": {"H": 2, "O": 2}},
+
+  {"id": "build-3-propane",  "level": 3, "targetName": "Propane",          "targetFormula": "C3H8",  "targetCid": 6334, "hint": "Three carbons in a chain, fully saturated with hydrogens", "expectedAtoms": {"C": 3, "H": 8}},
+  {"id": "build-3-acetone",  "level": 3, "targetName": "Acetone",          "targetFormula": "C3H6O", "targetCid": 180,  "hint": "Three carbons with the middle one double-bonded to oxygen", "expectedAtoms": {"C": 3, "H": 6, "O": 1}},
+  {"id": "build-3-methanol", "level": 3, "targetName": "Methanol",         "targetFormula": "CH4O",  "targetCid": 887,  "hint": "Carbon bonded to three hydrogens and one hydroxyl group", "expectedAtoms": {"C": 1, "H": 4, "O": 1}},
+  {"id": "build-3-acetic",   "level": 3, "targetName": "Acetic acid",      "targetFormula": "C2H4O2","targetCid": 176,  "hint": "Two carbons: one with three H's, one double-bonded to O and single-bonded to OH", "expectedAtoms": {"C": 2, "H": 4, "O": 2}},
+  {"id": "build-3-propene",  "level": 3, "targetName": "Propene",          "targetFormula": "C3H6",  "targetCid": 8252, "hint": "Three carbons — first two joined by a double bond, third by a single bond, fill remaining with H", "expectedAtoms": {"C": 3, "H": 6}},
+  {"id": "build-3-methylamine","level": 3, "targetName": "Methylamine",    "targetFormula": "CH5N",  "targetCid": 6329, "hint": "Carbon bonded to three hydrogens and one NH2 group", "expectedAtoms": {"C": 1, "H": 5, "N": 1}},
+
+  {"id": "build-4-urea",     "level": 4, "targetName": "Urea",             "targetFormula": "CH4N2O","targetCid": 1176, "hint": "Carbon double-bonded to oxygen, single-bonded to two NH2 groups", "expectedAtoms": {"C": 1, "H": 4, "N": 2, "O": 1}},
+  {"id": "build-4-hcn",      "level": 4, "targetName": "Hydrogen cyanide", "targetFormula": "CHN",   "targetCid": 768,  "hint": "Hydrogen bonded to carbon, which is triple-bonded to nitrogen", "expectedAtoms": {"C": 1, "H": 1, "N": 1}},
+  {"id": "build-4-dimethylether", "level": 4, "targetName": "Dimethyl ether", "targetFormula": "C2H6O", "targetCid": 115, "hint": "Two methyl groups (CH3) connected through an oxygen atom", "expectedAtoms": {"C": 2, "H": 6, "O": 1}},
+  {"id": "build-4-acetaldehyde","level": 4, "targetName": "Acetaldehyde",  "targetFormula": "C2H4O", "targetCid": 177,  "hint": "Two carbons: one is a methyl (CH3), the other has a double bond to O and one H", "expectedAtoms": {"C": 2, "H": 4, "O": 1}},
+  {"id": "build-4-glycine",  "level": 4, "targetName": "Glycine backbone", "targetFormula": "C2H5NO2","targetCid": 750, "hint": "NH2-CH2-COOH: amine group, one CH2, then a carboxyl group (C=O and OH)", "expectedAtoms": {"C": 2, "H": 5, "N": 1, "O": 2}},
+  {"id": "build-4-ethyleneoxide","level": 4, "targetName": "Ethylene oxide","targetFormula": "C2H4O","targetCid": 6354, "hint": "Two carbons and one oxygen each bonded to each other in a three-membered ring, plus two H per carbon", "expectedAtoms": {"C": 2, "H": 4, "O": 1}},
+
+  {"id": "build-5-propanol",  "level": 5, "targetName": "1-Propanol",       "targetFormula": "C3H8O", "targetCid": 1031, "hint": "Three-carbon chain with a hydroxyl (-OH) on the end carbon", "expectedAtoms": {"C": 3, "H": 8, "O": 1}},
+  {"id": "build-5-formic",    "level": 5, "targetName": "Formic acid",      "targetFormula": "CH2O2", "targetCid": 284,  "hint": "One carbon double-bonded to O, single-bonded to OH and H", "expectedAtoms": {"C": 1, "H": 2, "O": 2}},
+  {"id": "build-5-ethylamine","level": 5, "targetName": "Ethylamine",       "targetFormula": "C2H7N", "targetCid": 6341, "hint": "Two-carbon chain with an amine (-NH2) on the end", "expectedAtoms": {"C": 2, "H": 7, "N": 1}},
+  {"id": "build-5-acetamide", "level": 5, "targetName": "Acetamide",        "targetFormula": "C2H5NO","targetCid": 178,  "hint": "Methyl group bonded to carbon, which is double-bonded to O and single-bonded to NH2", "expectedAtoms": {"C": 2, "H": 5, "N": 1, "O": 1}},
+  {"id": "build-5-butane",    "level": 5, "targetName": "Butane",            "targetFormula": "C4H10", "targetCid": 7843, "hint": "Four carbons in a straight chain, all single bonds, fully saturated with hydrogens", "expectedAtoms": {"C": 4, "H": 10}},
+  {"id": "build-5-dimethylamine","level": 5, "targetName": "Dimethylamine", "targetFormula": "C2H7N", "targetCid": 674,  "hint": "Nitrogen bonded to two methyl (CH3) groups and one hydrogen", "expectedAtoms": {"C": 2, "H": 7, "N": 1}}
+]
