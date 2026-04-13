@@ -59,10 +59,21 @@ fetches spoiler-redacted hints from **Wikipedia**.
 
 PubChem and Wikipedia require no API key. Wikipedia is called with a
 descriptive `User-Agent` header per their
-[API etiquette](https://en.wikipedia.org/api/rest_v1/). The OpenAI endpoint
-requires a Bearer API key, currently set in the `OPENAI_API_KEY` constant
-near the top of `molecule_game.py`. For real deployments, move it to an
-environment variable — never commit a live key to a public repo.
+[API etiquette](https://en.wikipedia.org/api/rest_v1/).
+
+The OpenAI endpoint requires a Bearer API key, which the game reads from
+the `OPENAI_API_KEY` environment variable. For convenience, a `.env` file
+placed next to `molecule_game.py` is auto-loaded at startup:
+
+```bash
+cp .env.example .env
+# then edit .env and paste your key
+echo 'OPENAI_API_KEY=sk-...' > .env
+```
+
+`.env` is listed in `.gitignore`, so your key is never committed. If no
+key is set, the Study Buddy popup still appears after 3 wrong attempts
+but shows a fallback hint instead of calling OpenAI.
 
 ---
 

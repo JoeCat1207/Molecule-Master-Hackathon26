@@ -16,6 +16,7 @@ Run:
 from __future__ import annotations
 
 import io
+import os
 import re
 import random
 import threading
@@ -174,10 +175,10 @@ WIKI_SUMMARY_URL = "https://en.wikipedia.org/api/rest_v1/page/summary/{title}"
 WIKI_UA = "MoleculeMaster/1.0 (educational chemistry practice game)"
 
 # OpenAI assistant — triggers after too many wrong attempts on a molecule.
-OPENAI_API_KEY = (
-    "sk-proj-e1vRMlsxDstfrivoQ75IB-wFUqXYB3iT1pO9zFSzgP4H-s1vxRP_MRMrZ7p_yBiPiN3M6"
-    "dGbFnT3BlbkFJvne6UGI7mq4W8ZtQTouqL5BwfBszWB77Xhx8f9VE1h0L6OPClU7Qa2vI3qsajH1PKc1rbfSLgA"
-)
+# The API key is read from the OPENAI_API_KEY environment variable. If it's
+# unset, the AI assistant gracefully falls back to a generic hint.
+# A .env file in the project root is auto-loaded (see _load_dotenv below),
+# and .env is git-ignored so the key never lands in version control.
 OPENAI_CHAT_URL = "https://api.openai.com/v1/chat/completions"
 OPENAI_MODEL = "gpt-4o-mini"
 
@@ -760,11 +761,22 @@ class MoleculeGame:
             f"or where it's found — but DO NOT state the name or any of "
             f"these exact terms: {', '.join(sorted(mol['answers']))}."
         )
+        api_key = os.environ.get("OPENAI_API_KEY", "").strip()
+        if not api_key:
+            message = (
+                "(AI tutor disabled — no OPENAI_API_KEY set.)\n\n"
+                f"Hint: the formula is {mol['formula']}, and the common "
+                f"name has {len(mol['display'])} characters. Set "
+                f"OPENAI_API_KEY in a .env file next to molecule_game.py "
+                f"to enable the Study Buddy."
+            )
+            self.root.after(0, self._show_ai_message, mol, message)
+            return
         try:
             resp = requests.post(
                 OPENAI_CHAT_URL,
                 headers={
-                    "Authorization": f"Bearer {OPENAI_API_KEY}",
+                    "Authorization": f"Bearer {api_key}",
                     "Content-Type": "application/json",
                 },
                 json={
@@ -839,7 +851,24 @@ class MoleculeGame:
 # Entry point                                                                 #
 # --------------------------------------------------------------------------- #
 
+def _load_dotenv() -> None:
+    """Minimal .env loader: KEY=VALUE lines, no external dependency."""
+    path = os.path.join(os.path.dirname(os.path.abspath(__file__)), ".env")
+    if not os.path.isfile(path):
+        return
+    with open(path, "r", encoding="utf-8") as fh:
+        for line in fh:
+            line = line.strip()
+            if not line or line.startswith("#") or "=" not in line:
+                continue
+            key, _, value = line.partition("=")
+            key = key.strip()
+            value = value.strip().strip('"').strip("'")
+            os.environ.setdefault(key, value)
+
+
 def main() -> None:
+    _load_dotenv()
     root = tk.Tk()
     MoleculeGame(root)
     root.mainloop()
