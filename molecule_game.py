@@ -173,6 +173,18 @@ PUBCHEM_PNG_URL = (
 WIKI_SUMMARY_URL = "https://en.wikipedia.org/api/rest_v1/page/summary/{title}"
 WIKI_UA = "MoleculeMaster/1.0 (educational chemistry practice game)"
 
+# OpenAI assistant — triggers after too many wrong attempts on a molecule.
+OPENAI_API_KEY = (
+    "sk-proj-e1vRMlsxDstfrivoQ75IB-wFUqXYB3iT1pO9zFSzgP4H-s1vxRP_MRMrZ7p_yBiPiN3M6"
+    "dGbFnT3BlbkFJvne6UGI7mq4W8ZtQTouqL5BwfBszWB77Xhx8f9VE1h0L6OPClU7Qa2vI3qsajH1PKc1rbfSLgA"
+)
+OPENAI_CHAT_URL = "https://api.openai.com/v1/chat/completions"
+OPENAI_MODEL = "gpt-4o-mini"
+
+ASSIST_AFTER_WRONG = 3    # show AI assistant once wrong attempts reach this
+PENALTY_AFTER_WRONG = 3   # start losing points after MORE than this many wrongs
+WRONG_PENALTY = 5         # points lost per wrong attempt beyond the threshold
+
 WINDOW_W = 980
 WINDOW_H = 780
 
@@ -247,6 +259,10 @@ class MoleculeGame:
         self.wiki_cache: dict[str, str] = {}
         self._tk_image: Optional[ImageTk.PhotoImage] = None   # keep reference
         self._locked = False                         # block input during delay
+        self.wrong_attempts = 0                      # wrongs on current molecule
+        self.ai_window: Optional[tk.Toplevel] = None
+        self.ai_text: Optional[tk.Text] = None
+        self.ai_status: Optional[int] = None
 
         # fonts
         self.f_title    = tkfont.Font(family="Helvetica", size=30, weight="bold")
@@ -449,6 +465,8 @@ class MoleculeGame:
 
     def next_molecule(self) -> None:
         self._locked = False
+        self.wrong_attempts = 0
+        self._hide_ai_assistant()
         self.current = self._pick_molecule()
         self.history.append(self.current["cid"])
         self.entry_var.set("")
@@ -562,6 +580,7 @@ class MoleculeGame:
                  f"({self.current['display']})",
             fill=GOOD,
         )
+        self._hide_ai_assistant()
         self._update_stats()
         self._locked = True
 
@@ -582,11 +601,17 @@ class MoleculeGame:
 
     def _on_wrong(self, guess: str) -> None:
         self.streak = 0
+        self.wrong_attempts += 1
         self._flash_card(BAD)
         msg = (f"\u2717  Not quite — \"{guess}\" isn't right. "
                f"Formula: {self.current['formula']}")
+        if self.wrong_attempts > PENALTY_AFTER_WRONG:
+            self.score = max(0, self.score - WRONG_PENALTY)
+            msg += f"   (\u2212{WRONG_PENALTY} pts)"
         self.canvas.itemconfigure(self.feedback_item, text=msg, fill=BAD)
         self._update_stats()
+        if self.wrong_attempts >= ASSIST_AFTER_WRONG:
+            self._show_ai_assistant(self.current)
 
     def _skip(self) -> None:
         if self._locked or not self.current:
@@ -597,6 +622,7 @@ class MoleculeGame:
             text=f"Skipped. That was {self.current['display']}.",
             fill=TEXT_DIM,
         )
+        self._hide_ai_assistant()
         self._update_stats()
         self._locked = True
         self.root.after(1100, self.next_molecule)
@@ -673,6 +699,110 @@ class MoleculeGame:
         if not self.current or self.current["cid"] != mol["cid"]:
             return  # user moved on
         self.canvas.itemconfigure(self.feedback_item, text=clue, fill=ACCENT)
+
+    # ---------- AI assistant (OpenAI) ------------------------------------ #
+
+    def _show_ai_assistant(self, mol: dict) -> None:
+        if self.ai_window is not None and tk.Toplevel.winfo_exists(self.ai_window):
+            self.ai_window.lift()
+            return
+
+        win = tk.Toplevel(self.root)
+        win.title("\u2728 Study Buddy")
+        win.configure(bg=CARD_BG)
+        win.geometry("420x320")
+        win.transient(self.root)
+        win.protocol("WM_DELETE_WINDOW", self._hide_ai_assistant)
+
+        tk.Label(
+            win, text="\u2728  Study Buddy", font=self.f_btn,
+            bg=CARD_BG, fg=ACCENT,
+        ).pack(pady=(14, 2))
+        tk.Label(
+            win,
+            text="You've missed this a few times — here's some help.",
+            font=self.f_small, bg=CARD_BG, fg=TEXT_DIM,
+        ).pack(pady=(0, 8))
+
+        text = tk.Text(
+            win, wrap="word", font=self.f_small,
+            bg="#0b1130", fg=TEXT_MAIN, relief="flat", bd=0,
+            padx=12, pady=10, height=10,
+            highlightthickness=2, highlightbackground=CARD_BORDER,
+        )
+        text.pack(fill="both", expand=True, padx=16, pady=(0, 14))
+        text.insert("1.0", "Thinking\u2026")
+        text.configure(state="disabled")
+
+        self.ai_window = win
+        self.ai_text = text
+
+        threading.Thread(
+            target=self._fetch_ai_hint, args=(mol,), daemon=True
+        ).start()
+
+    def _hide_ai_assistant(self) -> None:
+        if self.ai_window is not None:
+            try:
+                self.ai_window.destroy()
+            except tk.TclError:
+                pass
+        self.ai_window = None
+        self.ai_text = None
+
+    def _fetch_ai_hint(self, mol: dict) -> None:
+        prompt = (
+            f"A chemistry student is trying to identify a molecule with "
+            f"formula {mol['formula']}. They've guessed wrong several times. "
+            f"The correct answer is \"{mol['display']}\". "
+            f"Give them a friendly, encouraging hint in 3-4 short sentences "
+            f"that helps them figure it out — mention uses, structure clues, "
+            f"or where it's found — but DO NOT state the name or any of "
+            f"these exact terms: {', '.join(sorted(mol['answers']))}."
+        )
+        try:
+            resp = requests.post(
+                OPENAI_CHAT_URL,
+                headers={
+                    "Authorization": f"Bearer {OPENAI_API_KEY}",
+                    "Content-Type": "application/json",
+                },
+                json={
+                    "model": OPENAI_MODEL,
+                    "messages": [
+                        {"role": "system",
+                         "content": "You are a friendly chemistry tutor "
+                                    "helping a student identify a molecule "
+                                    "without spoiling the answer."},
+                        {"role": "user", "content": prompt},
+                    ],
+                    "temperature": 0.7,
+                },
+                timeout=20,
+            )
+            resp.raise_for_status()
+            data = resp.json()
+            message = data["choices"][0]["message"]["content"].strip()
+        except Exception as exc:                               # noqa: BLE001
+            message = (
+                "(Couldn't reach the AI tutor right now.)\n\n"
+                f"Hint: the formula is {mol['formula']}, and it has "
+                f"{len(mol['display'])} characters in its common name. "
+                f"Error: {str(exc)[:80]}"
+            )
+        self.root.after(0, self._show_ai_message, mol, message)
+
+    def _show_ai_message(self, mol: dict, message: str) -> None:
+        if (self.ai_text is None or self.current is None
+                or self.current["cid"] != mol["cid"]):
+            return
+        try:
+            self.ai_text.configure(state="normal")
+            self.ai_text.delete("1.0", "end")
+            self.ai_text.insert("1.0", message)
+            self.ai_text.configure(state="disabled")
+        except tk.TclError:
+            pass
 
     # ---------- visuals --------------------------------------------------- #
 

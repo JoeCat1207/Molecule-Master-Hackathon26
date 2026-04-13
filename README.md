@@ -23,7 +23,14 @@ fetches spoiler-redacted hints from **Wikipedia**.
   synonym) with █-blocks before showing it.
 - **Dynamic scoring** — each correct answer is worth `level × 10` points.
   Three correct answers in a row at a level advance the player to the next
-  level (up to level 5).
+  level (up to level 5). After **more than 3 wrong attempts** on the same
+  molecule, every additional wrong guess deducts **5 points** (score is
+  clamped at 0).
+- **AI Study Buddy** — if the player gets the same molecule wrong 3 times,
+  a popup tutor powered by the **OpenAI Chat Completions API**
+  (`gpt-4o-mini`) appears with a friendly, spoiler-free hint tailored to
+  that molecule. The window auto-dismisses as soon as the student answers
+  correctly (or skips).
 - **Streak counter** that resets on wrong answers and skips.
 - **Flexible answer matching** — case-insensitive, multiple synonyms per
   molecule (e.g. `acetaminophen` / `paracetamol` / `tylenol`, `adrenaline` /
@@ -48,10 +55,14 @@ fetches spoiler-redacted hints from **Wikipedia**.
 | --- | --- | --- |
 | **PubChem PUG REST** (primary) | Fetch 2D structure PNGs by compound ID | `https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/cid/{cid}/PNG?image_size=large` |
 | **Wikipedia REST v1** (secondary, for hints) | Fetch short article summaries | `https://en.wikipedia.org/api/rest_v1/page/summary/{title}` |
+| **OpenAI Chat Completions** (tutor assistant) | Generate spoiler-free help when a student struggles | `https://api.openai.com/v1/chat/completions` (model `gpt-4o-mini`) |
 
-Neither API requires an API key. Wikipedia is called with a descriptive
-`User-Agent` header per their
-[API etiquette](https://en.wikipedia.org/api/rest_v1/).
+PubChem and Wikipedia require no API key. Wikipedia is called with a
+descriptive `User-Agent` header per their
+[API etiquette](https://en.wikipedia.org/api/rest_v1/). The OpenAI endpoint
+requires a Bearer API key, currently set in the `OPENAI_API_KEY` constant
+near the top of `molecule_game.py`. For real deployments, move it to an
+environment variable — never commit a live key to a public repo.
 
 ---
 
@@ -93,6 +104,9 @@ from Wikipedia, or **SKIP** to give up and move on.
 5. A wrong answer resets the streak and reveals the molecular formula as a
    consolation clue. Click **HINT** if you want a description-based clue
    from Wikipedia instead.
+6. After **3 wrong attempts** on the same molecule, the **Study Buddy**
+   popup opens with an OpenAI-generated hint. After **more than 3 wrong
+   attempts**, each further wrong guess costs you 5 points.
 
 ### Accepted answers
 
