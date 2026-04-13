@@ -2,9 +2,12 @@ import { useState, useRef, useEffect } from 'react';
 import { useGameStore } from '../../store/gameStore';
 import Card from '../shared/Card';
 import Button from '../shared/Button';
+import StudyBuddyModal from '../shared/StudyBuddyModal';
 
 export default function QuizMode() {
   const [guess, setGuess] = useState('');
+  const [buddyOpen, setBuddyOpen] = useState(false);
+  const [buddyShownForAttempt, setBuddyShownForAttempt] = useState(0);
   const inputRef = useRef<HTMLInputElement>(null);
 
   const currentMolecule = useGameStore((s) => s.currentMolecule);
@@ -12,6 +15,7 @@ export default function QuizMode() {
   const feedbackType = useGameStore((s) => s.feedbackType);
   const hintText = useGameStore((s) => s.hintText);
   const lastScore = useGameStore((s) => s.lastScore);
+  const wrongAttempts = useGameStore((s) => s.wrongAttempts);
   const submitQuizAnswer = useGameStore((s) => s.submitQuizAnswer);
   const requestHint = useGameStore((s) => s.requestHint);
   const skipChallenge = useGameStore((s) => s.skipChallenge);
@@ -20,6 +24,20 @@ export default function QuizMode() {
   useEffect(() => {
     inputRef.current?.focus();
   }, [currentMolecule]);
+
+  // Auto-open Study Buddy after 3 wrong attempts (once per threshold)
+  useEffect(() => {
+    if (wrongAttempts >= 3 && wrongAttempts > buddyShownForAttempt) {
+      setBuddyOpen(true);
+      setBuddyShownForAttempt(wrongAttempts);
+    }
+  }, [wrongAttempts, buddyShownForAttempt]);
+
+  // Reset buddy state when molecule changes
+  useEffect(() => {
+    setBuddyOpen(false);
+    setBuddyShownForAttempt(0);
+  }, [currentMolecule?.cid]);
 
   if (!currentMolecule) {
     return <div className="flex-1 flex items-center justify-center text-text-dim">Loading molecule...</div>;
@@ -31,6 +49,7 @@ export default function QuizMode() {
     const correct = await submitQuizAnswer(guess.trim());
     if (correct) {
       setGuess('');
+      setBuddyOpen(false);
       setTimeout(() => {
         loadNextQuizMolecule();
       }, 2000);
@@ -39,11 +58,13 @@ export default function QuizMode() {
 
   const handleSkip = () => {
     setGuess('');
+    setBuddyOpen(false);
     skipChallenge();
   };
 
   const handleNext = () => {
     setGuess('');
+    setBuddyOpen(false);
     loadNextQuizMolecule();
   };
 
@@ -119,6 +140,11 @@ export default function QuizMode() {
         <Button variant="gold" size="sm" onClick={requestHint}>
           Hint
         </Button>
+        {wrongAttempts >= 3 && (
+          <Button variant="secondary" size="sm" onClick={() => setBuddyOpen(true)}>
+            Study Buddy
+          </Button>
+        )}
         <Button variant="danger" size="sm" onClick={handleSkip}>
           Skip
         </Button>
@@ -128,6 +154,15 @@ export default function QuizMode() {
           </Button>
         )}
       </div>
+
+      {/* Study Buddy Modal */}
+      <StudyBuddyModal
+        open={buddyOpen}
+        onClose={() => setBuddyOpen(false)}
+        cid={currentMolecule.cid}
+        wrongAttempts={wrongAttempts}
+        formula={currentMolecule.formula}
+      />
     </div>
   );
 }

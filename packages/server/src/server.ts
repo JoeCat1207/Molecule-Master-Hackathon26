@@ -1,6 +1,13 @@
+import dotenv from 'dotenv';
+import { fileURLToPath } from 'url';
+import { dirname, resolve } from 'path';
 import express from 'express';
 import cors from 'cors';
 import { router } from './routes/index.js';
+
+// Load .env from project root
+const __dirname = dirname(fileURLToPath(import.meta.url));
+dotenv.config({ path: resolve(__dirname, '..', '..', '..', '.env') });
 
 const app = express();
 const PORT = process.env.API_PORT || 3001;
