@@ -43,42 +43,42 @@ from PIL import Image, ImageChops, ImageDraw, ImageTk
 MOLECULES: dict[int, list[dict]] = {
     1: [
         {"cid": 962,  "display": "Water",            "wiki": "Water",
-         "answers": {"water", "h2o", "dihydrogen monoxide"},
+         "answers": {"water", "dihydrogen monoxide"},
          "formula": "H\u2082O"},
         {"cid": 297,  "display": "Methane",          "wiki": "Methane",
-         "answers": {"methane", "ch4"},
+         "answers": {"methane"},
          "formula": "CH\u2084"},
         {"cid": 222,  "display": "Ammonia",          "wiki": "Ammonia",
-         "answers": {"ammonia", "nh3", "azane"},
+         "answers": {"ammonia", "azane"},
          "formula": "NH\u2083"},
         {"cid": 280,  "display": "Carbon dioxide",   "wiki": "Carbon_dioxide",
-         "answers": {"carbon dioxide", "co2"},
+         "answers": {"carbon dioxide"},
          "formula": "CO\u2082"},
         {"cid": 784,  "display": "Hydrogen peroxide","wiki": "Hydrogen_peroxide",
-         "answers": {"hydrogen peroxide", "h2o2"},
+         "answers": {"hydrogen peroxide"},
          "formula": "H\u2082O\u2082"},
         {"cid": 947,  "display": "Nitrogen",         "wiki": "Nitrogen",
-         "answers": {"nitrogen", "n2", "dinitrogen"},
+         "answers": {"nitrogen", "dinitrogen"},
          "formula": "N\u2082"},
     ],
     2: [
         {"cid": 702,  "display": "Ethanol",          "wiki": "Ethanol",
-         "answers": {"ethanol", "ethyl alcohol", "c2h5oh", "c2h6o"},
+         "answers": {"ethanol", "ethyl alcohol"},
          "formula": "C\u2082H\u2086O"},
         {"cid": 887,  "display": "Methanol",         "wiki": "Methanol",
-         "answers": {"methanol", "methyl alcohol", "ch3oh", "ch4o"},
+         "answers": {"methanol", "methyl alcohol"},
          "formula": "CH\u2084O"},
         {"cid": 176,  "display": "Acetic acid",      "wiki": "Acetic_acid",
-         "answers": {"acetic acid", "ethanoic acid", "ch3cooh"},
+         "answers": {"acetic acid", "ethanoic acid"},
          "formula": "C\u2082H\u2084O\u2082"},
         {"cid": 241,  "display": "Benzene",          "wiki": "Benzene",
-         "answers": {"benzene", "c6h6"},
+         "answers": {"benzene"},
          "formula": "C\u2086H\u2086"},
         {"cid": 6324, "display": "Ethylene",         "wiki": "Ethylene",
-         "answers": {"ethylene", "ethene", "c2h4"},
+         "answers": {"ethylene", "ethene"},
          "formula": "C\u2082H\u2084"},
         {"cid": 6334, "display": "Propane",          "wiki": "Propane",
-         "answers": {"propane", "c3h8"},
+         "answers": {"propane"},
          "formula": "C\u2083H\u2088"},
     ],
     3: [
@@ -154,17 +154,20 @@ POINTS_PER_LEVEL = 10          # points per correct = level * POINTS_PER_LEVEL
 # Visual palette                                                              #
 # --------------------------------------------------------------------------- #
 
-BG_TOP      = "#0b1026"
-BG_BOTTOM   = "#1a2250"
-CARD_BG     = "#111a3a"
-CARD_BORDER = "#2b3a7a"
-TEXT_MAIN   = "#e8ecff"
-TEXT_DIM    = "#8b94c9"
-ACCENT      = "#22d3ee"     # cyan
-ACCENT_DARK = "#0891b2"
+BG_TOP      = "#151a24"     # neutral slate, warmer than navy
+BG_BOTTOM   = "#232a3a"
+CARD_BG     = "#1c2230"
+CARD_BORDER = "#343c52"
+INSET_BG    = "#12161f"     # darker inset (entry, study buddy card)
+SHADOW      = "#08090d"
+BAR_TRACK   = "#2a3144"
+TEXT_MAIN   = "#e8ecf2"
+TEXT_DIM    = "#8a92a6"
+ACCENT      = "#14b8a6"     # teal — serious-but-not-grim
+ACCENT_DARK = "#0d9488"
 GOOD        = "#34d399"     # emerald
 BAD         = "#f87171"     # red
-GOLD        = "#fbbf24"
+GOLD        = "#f5b841"     # slightly muted amber
 PURPLE      = "#a78bfa"
 
 PUBCHEM_PNG_URL = (
@@ -264,6 +267,7 @@ class MoleculeGame:
         self.ai_window: Optional[tk.Toplevel] = None
         self.ai_text: Optional[tk.Text] = None
         self.ai_status: Optional[int] = None
+        self._in_game = False                        # False while on start screen
 
         # fonts
         self.f_title    = tkfont.Font(family="Helvetica", size=30, weight="bold")
@@ -273,7 +277,17 @@ class MoleculeGame:
         self.f_body     = tkfont.Font(family="Helvetica", size=14)
         self.f_small    = tkfont.Font(family="Helvetica", size=11)
         self.f_btn      = tkfont.Font(family="Helvetica", size=12, weight="bold")
+        self.f_btn_big  = tkfont.Font(family="Helvetica", size=15, weight="bold")
         self.f_feedback = tkfont.Font(family="Helvetica", size=14, weight="bold")
+        self.f_hero     = tkfont.Font(family="Helvetica", size=46, weight="bold")
+        self.f_hero_sub = tkfont.Font(family="Helvetica", size=14, slant="italic")
+        self.f_icon_xl  = tkfont.Font(family="Helvetica", size=68)
+        self.f_sb_title = tkfont.Font(family="Avenir Next", size=24, weight="bold")
+        self.f_sb_sub   = tkfont.Font(family="Avenir Next", size=13, slant="italic")
+        self.f_sb_body  = tkfont.Font(family="Georgia", size=16)
+        self.f_sb_icon  = tkfont.Font(family="Helvetica", size=34)
+        self.f_sb_small = tkfont.Font(family="Avenir Next", size=11)
+        self.f_sb_btn   = tkfont.Font(family="Avenir Next", size=13, weight="bold")
 
         # main canvas (gradient background + everything drawn on it)
         self.canvas = tk.Canvas(root, width=WINDOW_W, height=WINDOW_H,
@@ -282,15 +296,8 @@ class MoleculeGame:
         draw_vertical_gradient(self.canvas, WINDOW_W, WINDOW_H,
                                BG_TOP, BG_BOTTOM)
 
-        self._build_header()
-        self._build_card()
-        self._build_controls()
-        self._build_footer()
-
-        self.root.bind("<Return>", lambda e: self._submit())
-        self.entry.focus_set()
-
-        self.next_molecule()
+        self.root.bind("<Return>", self._on_return)
+        self._build_start_screen()
 
     # ---------- UI layout ------------------------------------------------- #
 
@@ -333,7 +340,7 @@ class MoleculeGame:
         # soft shadow underlay
         rounded_rect(self.canvas, self.card_x1 + 5, self.card_y1 + 8,
                      self.card_x2 + 5, self.card_y2 + 8,
-                     r=22, fill="#05081c", outline="")
+                     r=22, fill=SHADOW, outline="")
         self.card_shape = rounded_rect(
             self.canvas, self.card_x1, self.card_y1,
             self.card_x2, self.card_y2,
@@ -363,7 +370,7 @@ class MoleculeGame:
         )
         self.canvas.create_rectangle(
             self.bar_x1, self.bar_y, self.bar_x2, self.bar_y + 10,
-            fill="#1a224a", outline="",
+            fill=BAR_TRACK, outline="",
         )
         self.progress_fill = self.canvas.create_rectangle(
             self.bar_x1, self.bar_y, self.bar_x1, self.bar_y + 10,
@@ -387,7 +394,7 @@ class MoleculeGame:
         self.entry = tk.Entry(
             self.root, textvariable=self.entry_var,
             font=self.f_body,
-            bg="#0b1130", fg=TEXT_MAIN, insertbackground=ACCENT,
+            bg=INSET_BG, fg=TEXT_MAIN, insertbackground=ACCENT,
             relief="flat", bd=0, highlightthickness=2,
             highlightbackground=CARD_BORDER, highlightcolor=ACCENT,
         )
@@ -405,15 +412,15 @@ class MoleculeGame:
         gap = 14
         x = entry_x + entry_w + 24
         self._make_button(x, btn_y, 110, btn_h, "SUBMIT",
-                          ACCENT, ACCENT_DARK, "#0b1026",
+                          GOOD, "#059669", BG_TOP,
                           self._submit, tag="btn_submit")
         x += 110 + gap
         self._make_button(x, btn_y, 100, btn_h, "HINT",
-                          PURPLE, "#8b5cf6", "#ffffff",
+                          GOLD, "#d97706", BG_TOP,
                           self._hint, tag="btn_hint")
         x += 100 + gap
         self._make_button(x, btn_y, 100, btn_h, "SKIP",
-                          "#334168", "#475588", TEXT_MAIN,
+                          BAD, "#dc2626", "#ffffff",
                           self._skip, tag="btn_skip")
 
     def _build_footer(self) -> None:
@@ -432,12 +439,13 @@ class MoleculeGame:
 
     def _make_button(self, x: int, y: int, w: int, h: int, label: str,
                      base: str, hover: str, fg: str,
-                     on_click: Callable[[], None], tag: str) -> None:
+                     on_click: Callable[[], None], tag: str,
+                     font: Optional[tkfont.Font] = None) -> None:
         """Draw a rounded-rectangle button with text and bind click/hover."""
         poly = rounded_rect(self.canvas, x, y, x + w, y + h,
-                            r=12, fill=base, outline="")
+                            r=14, fill=base, outline="")
         text = self.canvas.create_text(x + w / 2, y + h / 2, text=label,
-                                       font=self.f_btn, fill=fg)
+                                       font=font or self.f_btn, fill=fg)
         self.canvas.addtag_withtag(tag, poly)
         self.canvas.addtag_withtag(tag, text)
 
@@ -452,6 +460,122 @@ class MoleculeGame:
         self.canvas.tag_bind(tag, "<Enter>", on_enter)
         self.canvas.tag_bind(tag, "<Leave>", on_leave)
         self.canvas.tag_bind(tag, "<Button-1>", lambda _e: on_click())
+
+    # ---------- start screen --------------------------------------------- #
+
+    def _on_return(self, _e: object = None) -> None:
+        """Route the Enter key — start the game or submit an answer."""
+        if self._in_game:
+            self._submit()
+        else:
+            self._start_game()
+
+    def _build_start_screen(self) -> None:
+        """Render a centered landing page that matches the game's dark theme."""
+        cx = WINDOW_W // 2
+
+        # Logo badge — cyan-ringed circle with the atom symbol inside.
+        badge_cx, badge_cy, badge_r = cx, 132, 62
+        self.canvas.create_oval(
+            badge_cx - badge_r - 6, badge_cy - badge_r - 6,
+            badge_cx + badge_r + 6, badge_cy + badge_r + 6,
+            fill="", outline=ACCENT_DARK, width=2, tags="start",
+        )
+        self.canvas.create_oval(
+            badge_cx - badge_r, badge_cy - badge_r,
+            badge_cx + badge_r, badge_cy + badge_r,
+            fill=CARD_BG, outline=ACCENT, width=3, tags="start",
+        )
+        self.canvas.create_text(
+            badge_cx, badge_cy + 4, text="\u269B",
+            font=self.f_icon_xl, fill=ACCENT, tags="start",
+        )
+
+        # Hero title & subtitle
+        self.canvas.create_text(
+            cx, 238, text="Molecule Master",
+            font=self.f_hero, fill=TEXT_MAIN, tags="start",
+        )
+        self.canvas.create_text(
+            cx, 280, text="A chemistry practice game",
+            font=self.f_hero_sub, fill=TEXT_DIM, tags="start",
+        )
+
+        # Feature card (same rounded card style as the game)
+        fx1, fy1 = cx - 300, 320
+        fx2, fy2 = cx + 300, 560
+        rounded_rect(
+            self.canvas, fx1 + 5, fy1 + 8, fx2 + 5, fy2 + 8,
+            r=22, fill=SHADOW, outline="", tags="start",
+        )
+        rounded_rect(
+            self.canvas, fx1, fy1, fx2, fy2,
+            r=22, fill=CARD_BG, outline=CARD_BORDER, width=2, tags="start",
+        )
+        self.canvas.create_text(
+            fx1 + 30, fy1 + 28, anchor="w", text="WHAT'S INSIDE",
+            font=self.f_stat_lbl, fill=TEXT_DIM, tags="start",
+        )
+        self.canvas.create_line(
+            fx1 + 30, fy1 + 52, fx2 - 30, fy1 + 52,
+            fill=CARD_BORDER, width=1, tags="start",
+        )
+
+        bullets = [
+            (GOLD,   "30 molecules across 5 difficulty levels"),
+            (ACCENT, "Live 2D structures from the PubChem API"),
+            (PURPLE, "Spoiler-free hints from Wikipedia"),
+            (GOOD,   "AI Study Buddy if you get stuck"),
+        ]
+        by = fy1 + 88
+        for color, text in bullets:
+            self.canvas.create_oval(
+                fx1 + 36, by - 5, fx1 + 46, by + 5,
+                fill=color, outline="", tags="start",
+            )
+            self.canvas.create_text(
+                fx1 + 58, by, anchor="w", text=text,
+                font=self.f_body, fill=TEXT_MAIN, tags="start",
+            )
+            by += 36
+
+        # START GAME button — the primary action, matches the SUBMIT button style.
+        btn_w, btn_h = 260, 58
+        btn_x, btn_y = cx - btn_w // 2, 598
+        self._make_button(
+            btn_x, btn_y, btn_w, btn_h, "START GAME",
+            ACCENT, ACCENT_DARK, BG_TOP,
+            self._start_game, tag="start_btn",
+            font=self.f_btn_big,
+        )
+        self.canvas.addtag_withtag("start", "start_btn")
+
+        # Footer hint + credits
+        self.canvas.create_text(
+            cx, 686, text="Press Enter to begin",
+            font=self.f_small, fill=TEXT_DIM, tags="start",
+        )
+        self.canvas.create_text(
+            cx, 724,
+            text="Structures via PubChem  \u2022  Hints via Wikipedia  "
+                 "\u2022  Tutor via OpenAI",
+            font=self.f_small, fill=TEXT_DIM, tags="start",
+        )
+
+        self.root.focus_set()
+
+    def _start_game(self) -> None:
+        """Tear down the start screen and build the game UI."""
+        if self._in_game:
+            return
+        self.canvas.delete("start")
+        self._in_game = True
+        self._build_header()
+        self._build_card()
+        self._build_controls()
+        self._build_footer()
+        self.entry.focus_set()
+        self.next_molecule()
 
     # ---------- game flow ------------------------------------------------- #
 
@@ -502,13 +626,11 @@ class MoleculeGame:
 
     def _prepare_molecule_image(self, img: Image.Image) -> Image.Image:
         """Crop whitespace, scale up, drop onto a rounded white plate."""
-        # 1. Auto-crop — PubChem adds a lot of padding around small structures.
         rgb = img.convert("RGB")
         bg_ref = Image.new("RGB", rgb.size, (255, 255, 255))
         diff = ImageChops.difference(rgb, bg_ref)
         bbox = diff.getbbox()
         if bbox:
-            # expand the crop slightly so nothing is clipped
             left, top, right, bottom = bbox
             pad_c = 8
             left   = max(0, left - pad_c)
@@ -517,11 +639,9 @@ class MoleculeGame:
             bottom = min(img.size[1], bottom + pad_c)
             img = img.crop((left, top, right, bottom))
 
-        # 2. Scale up to fill the plate while preserving aspect ratio.
         target_w, target_h = 500, 360
         img.thumbnail((target_w, target_h), Image.LANCZOS)
 
-        # 3. Drop onto a rounded white plate.
         pad = 28
         plate_w = img.size[0] + pad * 2
         plate_h = img.size[1] + pad * 2
@@ -687,11 +807,20 @@ class MoleculeGame:
             if len(word) > 3 and word.isalpha():
                 redact_terms.add(word)
 
+        # For alpha terms of length ≥5 we redact a stem + any suffix, so that
+        # inflected or truncated variants (e.g. "adrenalin" for "adrenaline",
+        # "caffeinated" for "caffeine", "acetates" for "acetate") are also
+        # masked. Short or non-alpha terms (e.g. "atp", "5-ht") stay exact.
         for term in sorted(redact_terms, key=len, reverse=True):
             if not term:
                 continue
-            pattern = re.compile(
-                r"\b" + re.escape(term) + r"\b", re.IGNORECASE)
+            if term.isalpha() and len(term) >= 5:
+                stem = term[:-2] if len(term) >= 7 else term[:-1]
+                pattern = re.compile(
+                    r"\b" + re.escape(stem) + r"[a-z]*\b", re.IGNORECASE)
+            else:
+                pattern = re.compile(
+                    r"\b" + re.escape(term) + r"\b", re.IGNORECASE)
             snippet = pattern.sub("\u2588\u2588\u2588", snippet)
 
         return f"Hint (formula {mol['formula']}):  {snippet}"
@@ -708,35 +837,112 @@ class MoleculeGame:
             self.ai_window.lift()
             return
 
+        ww, wh = 640, 580
         win = tk.Toplevel(self.root)
-        win.title("\u2728 Study Buddy")
-        win.configure(bg=CARD_BG)
-        win.geometry("420x320")
+        win.title("Study Buddy")
+        win.configure(bg=BG_TOP)
+        win.minsize(520, 460)
+        win.resizable(True, True)
         win.transient(self.root)
         win.protocol("WM_DELETE_WINDOW", self._hide_ai_assistant)
+        win.bind("<Escape>", lambda e: self._hide_ai_assistant())
+
+        # Center the panel over the main window.
+        self.root.update_idletasks()
+        rx = self.root.winfo_rootx()
+        ry = self.root.winfo_rooty()
+        rw = self.root.winfo_width()
+        rh = self.root.winfo_height()
+        x = max(0, rx + (rw - ww) // 2)
+        y = max(0, ry + (rh - wh) // 2)
+        win.geometry(f"{ww}x{wh}+{x}+{y}")
+
+        outer = tk.Frame(win, bg=BG_TOP)
+        outer.pack(fill="both", expand=True, padx=22, pady=22)
+
+        # --- header: sparkle icon + title + molecule context -------------- #
+        header = tk.Frame(outer, bg=BG_TOP)
+        header.pack(fill="x", pady=(0, 16))
 
         tk.Label(
-            win, text="\u2728  Study Buddy", font=self.f_btn,
-            bg=CARD_BG, fg=ACCENT,
-        ).pack(pady=(14, 2))
-        tk.Label(
-            win,
-            text="You've missed this a few times — here's some help.",
-            font=self.f_small, bg=CARD_BG, fg=TEXT_DIM,
-        ).pack(pady=(0, 8))
+            header, text="\u2728", font=self.f_sb_icon,
+            bg=BG_TOP, fg=GOLD,
+        ).pack(side="left", padx=(2, 14))
 
-        text = tk.Text(
-            win, wrap="word", font=self.f_small,
-            bg="#0b1130", fg=TEXT_MAIN, relief="flat", bd=0,
-            padx=12, pady=10, height=10,
+        title_col = tk.Frame(header, bg=BG_TOP)
+        title_col.pack(side="left", fill="x", expand=True)
+
+        tk.Label(
+            title_col, text="Study Buddy", font=self.f_sb_title,
+            bg=BG_TOP, fg=TEXT_MAIN, anchor="w",
+        ).pack(fill="x", anchor="w")
+        tk.Label(
+            title_col,
+            text=f"A gentle nudge for formula  {mol['formula']}",
+            font=self.f_sb_sub, bg=BG_TOP, fg=ACCENT, anchor="w",
+        ).pack(fill="x", anchor="w", pady=(4, 0))
+
+        # Thin accent divider under the header.
+        tk.Frame(outer, bg=CARD_BORDER, height=1).pack(
+            fill="x", pady=(0, 14),
+        )
+
+        # --- reading card: scrollable text area --------------------------- #
+        card = tk.Frame(
+            outer, bg=INSET_BG,
             highlightthickness=2, highlightbackground=CARD_BORDER,
         )
-        text.pack(fill="both", expand=True, padx=16, pady=(0, 14))
+        card.pack(fill="both", expand=True)
+
+        scroll_host = tk.Frame(card, bg=INSET_BG)
+        scroll_host.pack(fill="both", expand=True, padx=2, pady=2)
+
+        scrollbar = tk.Scrollbar(
+            scroll_host, troughcolor=INSET_BG,
+            activebackground=ACCENT, width=12, relief="flat", bd=0,
+        )
+        scrollbar.pack(side="right", fill="y")
+
+        text = tk.Text(
+            scroll_host, wrap="word", font=self.f_sb_body,
+            bg=INSET_BG, fg=TEXT_MAIN, relief="flat", bd=0,
+            padx=26, pady=22, height=10,
+            highlightthickness=0,
+            yscrollcommand=scrollbar.set,
+            spacing1=4, spacing2=4, spacing3=10,
+            insertbackground=TEXT_MAIN,
+            selectbackground=ACCENT_DARK, selectforeground="#ffffff",
+            cursor="arrow",
+        )
+        text.pack(side="left", fill="both", expand=True)
+        scrollbar.configure(command=text.yview)
+
         text.insert("1.0", "Thinking\u2026")
         text.configure(state="disabled")
 
+        # --- footer: keyboard hint + dismiss button ----------------------- #
+        footer = tk.Frame(outer, bg=BG_TOP)
+        footer.pack(fill="x", pady=(16, 0))
+
+        tk.Label(
+            footer, text="Press  Esc  to close",
+            font=self.f_sb_small, bg=BG_TOP, fg=TEXT_DIM,
+        ).pack(side="left", pady=6)
+
+        close_btn = tk.Button(
+            footer, text="Got it",
+            font=self.f_sb_btn,
+            bg=ACCENT, fg=BG_TOP,
+            activebackground=ACCENT_DARK, activeforeground="#ffffff",
+            relief="flat", bd=0, padx=26, pady=10,
+            cursor="hand2", highlightthickness=0,
+            command=self._hide_ai_assistant,
+        )
+        close_btn.pack(side="right")
+
         self.ai_window = win
         self.ai_text = text
+        close_btn.focus_set()
 
         threading.Thread(
             target=self._fetch_ai_hint, args=(mol,), daemon=True
