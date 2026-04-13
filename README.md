@@ -14,36 +14,47 @@ fetches spoiler-redacted hints from **Wikipedia**.
 - **30 molecules across 5 difficulty levels**, from water and methane up to
   chlorophyll a, ATP, and quinine.
 - **Live structure images** — 2D skeletal formulas are fetched on demand from
-  the PubChem PUG REST API (`/compound/cid/{cid}/PNG`). Images are auto-cropped
-  to remove whitespace padding, upscaled, and placed on a rounded white plate
-  so the bonds pop against the dark theme.
+  the PubChem PUG REST API (`/compound/cid/{cid}/PNG`). Images are
+  auto-cropped to remove PubChem's whitespace padding, scaled to fit while
+  preserving aspect ratio (downscale-only, never upscaled into blur), and
+  dropped onto a rounded white plate so bonds stay crisp against the dark
+  theme.
 - **Secondary API for hints** — the *HINT* button hits the Wikipedia REST
   summary endpoint (`/api/rest_v1/page/summary/{title}`), trims the result to
-  a couple of sentences, and redacts the molecule's name (and any accepted
-  synonym) with █-blocks before showing it.
+  a couple of sentences, and redacts the molecule's name, synonyms, **and
+  morphological variants** (e.g. "adrenalin" when the answer is
+  "adrenaline", "caffeinated" when the answer is "caffeine") with █-blocks
+  before showing it.
 - **Dynamic scoring** — each correct answer is worth `level × 10` points.
   Three correct answers in a row at a level advance the player to the next
   level (up to level 5). After **more than 3 wrong attempts** on the same
   molecule, every additional wrong guess deducts **5 points** (score is
   clamped at 0).
 - **AI Study Buddy** — if the player gets the same molecule wrong 3 times,
-  a popup tutor powered by the **OpenAI Chat Completions API**
+  a polished popup tutor powered by the **OpenAI Chat Completions API**
   (`gpt-4o-mini`) appears with a friendly, spoiler-free hint tailored to
-  that molecule. The window auto-dismisses as soon as the student answers
-  correctly (or skips).
+  that molecule. The panel uses a dedicated reading-friendly typography
+  pair (Avenir Next for headings, Georgia 16 pt for body), shows the
+  molecule's formula as context, supports **Esc** to close, and has a
+  visible "Got it" dismiss button. It auto-dismisses as soon as the
+  student answers correctly (or skips).
 - **Streak counter** that resets on wrong answers and skips.
-- **Flexible answer matching** — case-insensitive, multiple synonyms per
-  molecule (e.g. `acetaminophen` / `paracetamol` / `tylenol`, `adrenaline` /
-  `epinephrine`, `ethanol` / `ethyl alcohol` / `C2H5OH`).
+- **Flexible answer matching** — case-insensitive, multiple *name-based*
+  synonyms per molecule (e.g. `acetaminophen` / `paracetamol` / `tylenol`,
+  `adrenaline` / `epinephrine`, `ethanol` / `ethyl alcohol`). Chemical
+  formulas are intentionally **not** accepted as answers, because the hint
+  system reveals the formula — accepting it would let players auto-solve.
 - **Visually polished UI** built entirely on a Tkinter `Canvas`:
-  - Vertical navy gradient background (96-step color interpolation).
-  - Rounded-corner cards with soft drop-shadows and cyan accent borders.
+  - Vertical slate gradient background (96-step color interpolation) —
+    neutral rather than navy so the app reads less "blue".
+  - Rounded-corner cards with soft drop-shadows and teal accent borders.
   - Card flashes emerald / red on correct / wrong answers.
   - Animated progress bar toward the next level.
-  - Stat panel showing SCORE (gold), LEVEL (cyan), and STREAK (emerald).
-  - Canvas-drawn buttons with hover states, so the dark theme renders
-    consistently on macOS, Windows, and Linux (bypassing platform button
-    styling quirks).
+  - Stat panel showing SCORE (gold), LEVEL (teal), and STREAK (emerald).
+  - Canvas-drawn action buttons with distinct semantic colors — SUBMIT
+    emerald, HINT amber, SKIP red — and hover states, so the dark theme
+    renders consistently on macOS, Windows, and Linux (bypassing platform
+    button styling quirks).
 - **Non-blocking networking** — image downloads and Wikipedia lookups run on
   background threads, so the UI never freezes. Both responses are cached.
 
@@ -114,7 +125,9 @@ from Wikipedia, or **SKIP** to give up and move on.
    to level 5 (where each correct answer is worth 50 points).
 5. A wrong answer resets the streak and reveals the molecular formula as a
    consolation clue. Click **HINT** if you want a description-based clue
-   from Wikipedia instead.
+   from Wikipedia instead. (Because the formula is shown in these clues,
+   formulas are not accepted as valid answers — you have to know the
+   name.)
 6. After **3 wrong attempts** on the same molecule, the **Study Buddy**
    popup opens with an OpenAI-generated hint. After **more than 3 wrong
    attempts**, each further wrong guess costs you 5 points.
@@ -126,13 +139,14 @@ examples:
 
 | Display name | Also accepted |
 | --- | --- |
-| Water | `water`, `h2o`, `dihydrogen monoxide` |
+| Water | `water`, `dihydrogen monoxide` |
 | Acetone | `acetone`, `propanone`, `2-propanone`, `dimethyl ketone` |
 | Acetaminophen | `acetaminophen`, `paracetamol`, `tylenol` |
 | Adrenaline | `adrenaline`, `epinephrine` |
 | Ascorbic acid | `ascorbic acid`, `vitamin c`, `l-ascorbic acid` |
 
-Matching is case-insensitive and whitespace-tolerant.
+Matching is case-insensitive and whitespace-tolerant. Molecular formulas
+are not accepted, since the hint system reveals the formula.
 
 ---
 
@@ -171,8 +185,13 @@ When the player clicks **HINT**, the game:
 3. Builds a redaction set containing: all accepted answers, the molecule's
    display name, every word >3 letters in the display name, and every word
    >3 letters in the Wikipedia title.
-4. Replaces each redaction term with `███` using a case-insensitive word-
-   boundary regex, longest terms first.
+4. Replaces each redaction term with `███`, longest terms first. For alpha
+   terms of 5+ letters, matching is stem-based (drop the last 1–2
+   characters, then match the stem plus any alphabetical suffix) so that
+   morphological variants like "adrenalin" for "adrenaline",
+   "caffeinated" for "caffeine", or "acetates" for "acetate" are also
+   masked. Short or non-alpha terms (e.g. `atp`, `5-ht`) use exact
+   word-boundary matching so they don't over-redact.
 
 So a hint for caffeine looks like:
 
